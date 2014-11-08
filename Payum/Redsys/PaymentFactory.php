@@ -10,12 +10,12 @@
 namespace Payum\Redsys;
 
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
-use Payum\Core\Payment;
+use Payum\Core\Action\GetHttpRequestAction;
 use Payum\Core\Extension\EndlessCycleDetectorExtension;
+use Payum\Core\Payment;
 use Payum\Redsys\Action\CaptureAction;
 use Payum\Redsys\Action\FillOrderDetailsAction;
 use Payum\Redsys\Action\StatusAction;
-use Payum\Core\Action\GetHttpRequestAction;
 
 abstract class PaymentFactory
 {
@@ -27,19 +27,13 @@ abstract class PaymentFactory
         $payment = new Payment;
 
         $payment->addApi( $api );
-        $payment->addExtension(new EndlessCycleDetectorExtension);
-        $payment->addAction(new CaptureAction);
-        $payment->addAction(new FillOrderDetailsAction);
-        $payment->addAction(new StatusAction);
-        $payment->addAction(new ExecuteSameRequestWithModelDetailsAction);
-        $payment->addAction(new GetHttpRequestAction);
+        $payment->addExtension( new EndlessCycleDetectorExtension );
+        $payment->addAction( new CaptureAction );
+        $payment->addAction( new FillOrderDetailsAction );
+        $payment->addAction( new StatusAction );
+        $payment->addAction( new ExecuteSameRequestWithModelDetailsAction );
+        $payment->addAction( new GetHttpRequestAction );
 
         return $payment;
-    }
-
-    /**
-     */
-    private  function __construct()
-    {
     }
 }

@@ -4,9 +4,9 @@ namespace Payum\Redsys\Action;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Request\FillOrderDetails;
 use Payum\Core\Security\GenericTokenFactoryInterface;
-use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Redsys\Api;
 
 class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
@@ -22,23 +22,23 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
     protected $tokenFactory;
 
     /**
-     * {@inheritDoc}
+     * @param GenericTokenFactoryInterface $tokenFactory
      */
-    public function setApi($api)
+    public function __construct( GenericTokenFactoryInterface $tokenFactory = null )
     {
-        if (false ==$api instanceof Api) {
-            throw new UnsupportedApiException('Not supported.');
-        }
-
-        $this->api = $api;
+        $this->tokenFactory = $tokenFactory;
     }
 
     /**
-     * @param GenericTokenFactoryInterface $tokenFactory
+     * {@inheritDoc}
      */
-    public function __construct(GenericTokenFactoryInterface $tokenFactory = null)
+    public function setApi( $api )
     {
-        $this->tokenFactory = $tokenFactory;
+        if (false == $api instanceof Api) {
+            throw new UnsupportedApiException( 'Not supported.' );
+        }
+
+        $this->api = $api;
     }
 
     /**
@@ -46,23 +46,23 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
      *
      * @param FillOrderDetails $request
      */
-    public function execute($request)
+    public function execute( $request )
     {
-        RequestNotSupportedException::assertSupports($this, $request);
+        RequestNotSupportedException::assertSupports( $this, $request );
 
         $order = $request->getOrder();
         $token = $request->getToken();
-        $details = $this->api->preparePayment( $order, $token );     
-        $order->setDetails($details);  
+        $details = $this->api->preparePayment( $order, $token );
+        $order->setDetails( $details );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function supports($request)
+    public function supports( $request )
     {
         return $request instanceof FillOrderDetails;
     }
 
-    
+
 }
