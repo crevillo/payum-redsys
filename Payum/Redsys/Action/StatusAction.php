@@ -25,25 +25,24 @@ class StatusAction implements ActionInterface
             $request->markNew();
             return;
         }
-
-	$fp = fopen ( '../ezpublish/logs/tpv-status.log', 'a' );
-	fwrite( $fp, print_r( $model, true ) );
-	fclose( $fp );
-
-        if (180 == $model['Ds_Response']) {
-
+        
+        // cast to int 'Ds_Response' for make the checks easier
+        $dsResponse = (int)$model['Ds_Response'];
+        
+        // bank will provide you the doc with the error codes
+        // we only check if the bank has give us a positive response.
+        // For that, the casted to int value must be between 0 and 99
+        // Only in that case we mark the request as captured
+        if ( 0 <=$dsResponse && 99 >= $dsResponse ){
             $request->markCaptured();
-
             return;
         }
 
-        if (Constants::STATUS_CAPTURED == $model[Constants::FIELD_STATUS]) {
-            $request->markCaptured();
-
-            return;
-        }
-
-        $request->markUnknown();
+        // in any other case we mark the request as failed
+        // and set the error code in the request too 
+        // so developers can decide what to do with that code
+        // (maybe building their own messages errors)
+        $request->markFailed();
     }
 
     /**

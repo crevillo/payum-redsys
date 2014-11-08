@@ -11,7 +11,6 @@ namespace Payum\Redsys;
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
 use Payum\Core\Exception\InvalidArgumentException;
-use Buzz\Message\Form\FormRequest;
 
 class Api
 {
@@ -65,34 +64,25 @@ class Api
         }
     }
 
-    public function getOnsiteUrl()
+    /**
+     * Returns the url where we need to send the post request
+     * 
+     * @return string          
+     */         
+    public function getRedsysUrl()
     {
         return $this->options['url'];
     }
 
-    public function preparePayment( array $params )
-    {
-        $params['Ds_Merchant_MerchantCode'] = $this->options['merchant_code'];
-        $params['Ds_Merchant_Terminal'] = 1;
-        $params['Ds_Merchant_MerchantSignature'] = $this->signature( $params );
-        $params['Ds_Merchant_SumTotal'] = $params['Ds_Merchant_Amount'];
-        return $params;
-    }
-
-    public function signature( $params )
-    {
-        $msgToSign = $params['Ds_Merchant_Amount']
-            . $params['Ds_Merchant_Order']
-            . $this->options['merchant_code']
-            . $params['Ds_Merchant_Currency']
-            . $params['Ds_Merchant_TransactionType']
-            . $params['Ds_Merchant_MerchantURL']
-            . $this->options['secret_key'];
-        
-        return strtoupper(sha1($msgToSign));
-    }
-    
-    public function buildOrderDetails( $order, $token )
+    /**
+     * Prepare the payment depending on the order and the token
+     * 
+     * @param OrderInterface $order
+     * @param $token
+     * 
+     * @return array                         
+     */         
+    public function preparePayment( $order, $token )
     {
         $details = $order->getDetails();
 
@@ -100,7 +90,7 @@ class Api
       
         $details['Ds_Merchant_Currency'] = $this->currencies[$order->getCurrencyCode()];
 
-        $details['Ds_Merchant_Order'] = $this->formatOrderNumber( $order->getNumber() );
+        $details['Ds_Merchant_Order'] = $this->ensureCorrectOrderNumber( $order->getNumber() );       
 
         // following values can be addded to the details 
         // order when building it. If they are not passed, values
@@ -145,6 +135,26 @@ class Api
         
     }
     
+    /**
+     * Adds merchant code and merchant terminal to the payment built 
+     * in the fillorderdetails action    
+     */         
+    public function addMerchantDataToPayment( array $payment )
+    {
+        $payment['Ds_Merchant_MerchantCode'] = $this->options['merchant_code'];
+        
+        $payment['Ds_Merchant_Terminal'] = $this->options['terminal'];
+        
+        return $payment;
+    }
+    
+    /**
+     * Validate the response to be sure the bank is sending it
+     * 
+     * @param array $response
+     * 
+     * @return bool                    
+     */         
     public function validateGatewayResponse( $response )
     {
          $msgToSign = $response['Ds_Amount']
@@ -157,14 +167,62 @@ class Api
          return strtoupper(sha1($msgToSign)) == $response['Ds_Signature'];
     }
     
-    private function formatOrderNumber( $orderNumber )
+    /**
+     * Calculate the signature depending on some other values
+     * sent in the payment.         
+     * 
+     * @param array $params
+     * 
+     * @return string                     
+     */         
+    private function signature( $params )
     {
-        //Falta comprobar que empieza por 4 numericos y que como mucho tiene 12 de longitud
-        $length = strlen($orderNumber);
-        $minLength = 4;
-        if ($length < $minLength) {
-            $orderNumber = str_pad($orderNumber, $minLength, '0', STR_PAD_LEFT);
-        }
+        $msgToSign = $params['Ds_Merchant_Amount']
+            . $params['Ds_Merchant_Order']
+            . $this->options['merchant_code']
+            . $params['Ds_Merchant_Currency']
+            . $params['Ds_Merchant_TransactionType']
+            . $params['Ds_Merchant_MerchantURL']
+            . $this->options['secret_key'];
+        
+        return strtoupper(sha1($msgToSign));
+    }
+    
+    /**
+     * Validate the order number passed to the bank. it needs to pass the 
+     * following test
+     * 
+     * - Must be between 4 and 12 characters
+     *     - We complete with 0 to the left in case length or the number is lower
+     *       than 4 in order to make the integration easier
+     * - Four first characters must be digits
+     * - Following eight can be digits or characters which ASCII numbers are:
+     *    - between 65 and 90 ( A - Z)
+     *    - between 97 and 122 ( a - z )     
+     *    
+     * If the test pass, orderNumber will be returned. if not, a Exception will be thrown
+     * 
+     * @param string $orderNumber
+     * 
+     * @return string                                                                     
+     */         
+    private function ensureCorrectOrderNumber( $orderNumber )
+    {
+        // add 0 to the left in case length of the order number is less than 4
+        $orderNumber = str_pad($orderNumber, 4, '0', STR_PAD_LEFT);
+        
+        $firstPartOfTheOrderNumber = substr($orderNumber, 0, 4 );
+        $secondPartOfTheOrderNumber = substr($orderNumber, 4, strlen($orderNumber));
+        
+        print 'first' . $firstPartOfTheOrderNumber;
+        
+        if( !ctype_digit($firstPartOfTheOrderNumber) ||
+            !ctype_alnum($secondPartOfTheOrderNumber)
+          )
+        {
+           throw new InvalidArgumentException('The order number is not correct.');  
+        }  
+        
         return $orderNumber;
     }
 }

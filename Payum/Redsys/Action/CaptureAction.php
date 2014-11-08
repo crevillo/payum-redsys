@@ -59,15 +59,14 @@ class CaptureAction extends PaymentAwareAction implements ApiAwareInterface
             throw new HttpResponse('');
         } 
 	
-	if ( false == $model['Ds_Response'] )
-	{
-
-		throw new HttpPostRedirect(
-		    $this->api->getOnsiteUrl(),
-		    $this->api->preparePayment($model->toUnsafeArray())
-		);
-	
-	}
+      	if ( false == $model['Ds_Response'] )
+      	{ 
+      	  
+          throw new HttpPostRedirect(
+      		    $this->api->getRedsysUrl(),
+      		    $this->api->addMerchantDataToPayment( $model->toUnsafeArray() )
+      		);      	
+      	}
 	
 	
 
@@ -77,7 +76,7 @@ class CaptureAction extends PaymentAwareAction implements ApiAwareInterface
      * {@inheritDoc}
      */
     public function supports($request)
-    {
+    {         
         return
             $request instanceof Capture &&
             $request->getModel() instanceof \ArrayAccess

@@ -52,8 +52,8 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
 
         $order = $request->getOrder();
         $token = $request->getToken();
-        $details = $this->api->buildOrderDetails( $order, $token );        
-        $order->setDetails($details);
+        $details = $this->api->preparePayment( $order, $token );     
+        $order->setDetails($details);  
     }
 
     /**
