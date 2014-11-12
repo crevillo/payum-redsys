@@ -9,6 +9,10 @@ use Payum\Core\Security\TokenInterface;
 
 class Api
 {
+    const TRANSACTIONTYPE_DEFAULT = 0;
+
+    const CONSUMERLANGUAGE_SPANISH = '001';
+
     protected $options = array(
         'merchant_code' => null,
         'terminal' => null,
@@ -97,12 +101,12 @@ class Api
         // order details or in the options.
         if (!isset( $details['Ds_Merchant_TransactionType'] )) {
             $details['Ds_Merchant_TransactionType'] = isset( $this->options['default_transaction_type'] )
-                ? $this->options['default_transaction_type'] : 0;
+                ? $this->options['default_transaction_type'] : self::TRANSACTIONTYPE_DEFAULT;
         }
 
         // set customer language to spanish in case not provided
         if (!isset( $details['Ds_Merchant_ConsumerLanguage'] )) {
-            $details['Ds_Merchant_ConsumerLanguage'] = '001';
+            $details['Ds_Merchant_ConsumerLanguage'] = self::CONSUMERLANGUAGE_SPANISH;
         }
 
         // these following to are not mandatory. only filled if present in the

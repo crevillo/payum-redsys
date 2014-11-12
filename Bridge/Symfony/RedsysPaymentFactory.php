@@ -56,7 +56,7 @@ class RedsysPaymentFactory extends AbstractPaymentFactory
      */
     protected function addApis(Definition $paymentDefinition, ContainerBuilder $container, $contextName, array $config)
     {
-        $apiDefinition = new DefinitionDecorator('payum.redsys.api.prototype');
+        $apiDefinition = new DefinitionDecorator('crevillo.payum.redsys.api.prototype');
         $apiDefinition->replaceArgument(0, $config);
         $apiDefinition->setPublic(true);
         $apiId = 'payum.context.'.$contextName.'.api';

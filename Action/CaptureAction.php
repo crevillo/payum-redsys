@@ -49,7 +49,7 @@ class CaptureAction extends PaymentAwareAction implements ApiAwareInterface
         ) {
             $model->replace( $httpRequest->request );
             // throw empty response so bank receive a response with code 200
-            throw new HttpResponse( '' );
+            throw new HttpResponse('', 200);
         }
 
         if (false == $model['Ds_Response']) {

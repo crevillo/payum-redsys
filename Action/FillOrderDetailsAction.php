@@ -12,7 +12,7 @@ use Crevillo\Payum\Redsys\Api;
 class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
 {
     /**
-     * @var \Payum\Paypal\ExpressCheckout\Nvp\Api
+     * @var Api
      */
     protected $api;
 
@@ -63,5 +63,4 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
     {
         return $request instanceof FillOrderDetails;
     }
-
 }
