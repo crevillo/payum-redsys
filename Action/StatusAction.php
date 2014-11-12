@@ -11,7 +11,7 @@ class StatusAction implements ActionInterface
     /**
      * {@inheritDoc}
      */
-    public function execute( $request )
+    public function execute($request)
     {
         /** @var $request GetStatusInterface */
         RequestNotSupportedException::assertSupports( $this, $request );
@@ -25,7 +25,7 @@ class StatusAction implements ActionInterface
         }
 
         // cast to int 'Ds_Response' for make the checks easier
-        $dsResponse = (int)$model['Ds_Response'];
+        $dsResponse = (int) $model['Ds_Response'];
 
         // bank will provide you the doc with the error codes
         // we only check if the bank has give us a positive response.
@@ -33,11 +33,12 @@ class StatusAction implements ActionInterface
         // Only in that case we mark the request as captured
         if (0 <= $dsResponse && 99 >= $dsResponse) {
             $request->markCaptured();
+
             return;
         }
 
         // in any other case we mark the request as failed
-        // and set the error code in the request too 
+        // and set the error code in the request too
         // so developers can decide what to do with that code
         // (maybe building their own messages errors)
         $request->markFailed();
@@ -46,7 +47,7 @@ class StatusAction implements ActionInterface
     /**
      * {@inheritDoc}
      */
-    public function supports( $request )
+    public function supports($request)
     {
         return
             $request instanceof GetStatusInterface &&

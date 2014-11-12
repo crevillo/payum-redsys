@@ -24,7 +24,7 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
     /**
      * @param GenericTokenFactoryInterface $tokenFactory
      */
-    public function __construct( GenericTokenFactoryInterface $tokenFactory = null )
+    public function __construct(GenericTokenFactoryInterface $tokenFactory = null)
     {
         $this->tokenFactory = $tokenFactory;
     }
@@ -32,7 +32,7 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function setApi( $api )
+    public function setApi($api)
     {
         if (false == $api instanceof Api) {
             throw new UnsupportedApiException( 'Not supported.' );
@@ -46,7 +46,7 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
      *
      * @param FillOrderDetails $request
      */
-    public function execute( $request )
+    public function execute($request)
     {
         RequestNotSupportedException::assertSupports( $this, $request );
 
@@ -59,10 +59,9 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function supports( $request )
+    public function supports($request)
     {
         return $request instanceof FillOrderDetails;
     }
-
 
 }

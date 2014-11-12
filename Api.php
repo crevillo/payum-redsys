@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: carlos
- * Date: 1/11/14
- * Time: 13:55
- */
-
 namespace Crevillo\Payum\Redsys;
 
 use Buzz\Client\ClientInterface;
@@ -46,9 +39,9 @@ class Api
         'TRL' => '949'
     );
 
-    public function __construct( array $options, ClientInterface $client = null )
+    public function __construct(array $options, ClientInterface $client = null)
     {
-        $this->client = $client ?: new Curl;
+        $this->client = $client ?: new Curl();
 
         $this->options = array_replace( $this->options, $options );
 
@@ -86,7 +79,7 @@ class Api
      *
      * @return array
      */
-    public function preparePayment( OrderInterface $order, TokenInterface $token )
+    public function preparePayment(OrderInterface $order, TokenInterface $token)
     {
         $details = $order->getDetails();
 
@@ -96,12 +89,12 @@ class Api
 
         $details['Ds_Merchant_Order'] = $this->ensureCorrectOrderNumber( $order->getNumber() );
 
-        // following values can be addded to the details 
+        // following values can be addded to the details
         // order when building it. If they are not passed, values
         // will be taken from the default options if present
         // in case of Ds_Merchant_TransactionType, as its mandatory
-        // 0 will be asigned in case value is not present in the 
-        // order details or in the options. 
+        // 0 will be asigned in case value is not present in the
+        // order details or in the options.
         if (!isset( $details['Ds_Merchant_TransactionType'] )) {
             $details['Ds_Merchant_TransactionType'] = isset( $this->options['default_transaction_type'] )
                 ? $this->options['default_transaction_type'] : 0;
@@ -112,7 +105,7 @@ class Api
             $details['Ds_Merchant_ConsumerLanguage'] = '001';
         }
 
-        // these following to are not mandatory. only filled if present in the 
+        // these following to are not mandatory. only filled if present in the
         // order details or in the options
         if (!isset( $details['Ds_Merchant_MerchantName'] ) && isset( $this->options['merchant_name'] )) {
             $details['Ds_Merchant_MerchantName'] = $this->options['merchant_name'];
@@ -121,7 +114,7 @@ class Api
             $details['Ds_Merchant_ProductDescription'] = $this->options['product_description'];
         }
 
-        // notification url where the bank will post the response        
+        // notification url where the bank will post the response
         $details['Ds_Merchant_MerchantURL'] = $token->getTargetUrl();
 
         // return url in case of payment done
@@ -152,7 +145,7 @@ class Api
      *
      * @return string
      */
-    private function ensureCorrectOrderNumber( $orderNumber )
+    private function ensureCorrectOrderNumber($orderNumber)
     {
         // add 0 to the left in case length of the order number is less than 4
         $orderNumber = str_pad( $orderNumber, 4, '0', STR_PAD_LEFT );
@@ -177,7 +170,7 @@ class Api
      *
      * @return string
      */
-    private function signature( $params )
+    private function signature($params)
     {
         $msgToSign = $params['Ds_Merchant_Amount']
             . $params['Ds_Merchant_Order']
@@ -194,7 +187,7 @@ class Api
      * Adds merchant code and merchant terminal to the payment built
      * in the fillorderdetails action
      */
-    public function addMerchantDataToPayment( array $payment )
+    public function addMerchantDataToPayment(array $payment)
     {
         $payment['Ds_Merchant_MerchantCode'] = $this->options['merchant_code'];
 
@@ -210,7 +203,7 @@ class Api
      *
      * @return bool
      */
-    public function validateGatewayResponse( $response )
+    public function validateGatewayResponse($response)
     {
         $msgToSign = $response['Ds_Amount']
             . $response['Ds_Order']
