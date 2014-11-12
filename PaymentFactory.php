@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: carlos
- * Date: 1/11/14
- * Time: 13:35
- */
-
-
 namespace Crevillo\Payum\Redsys;
 
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
@@ -22,17 +14,17 @@ abstract class PaymentFactory
     /**
      * @return \Payum\Core\Payment
      */
-    public static function create( Api $api )
+    public static function create(Api $api)
     {
-        $payment = new Payment;
+        $payment = new Payment();
 
-        $payment->addApi( $api );
-        $payment->addExtension( new EndlessCycleDetectorExtension );
-        $payment->addAction( new CaptureAction );
-        $payment->addAction( new FillOrderDetailsAction );
-        $payment->addAction( new StatusAction );
-        $payment->addAction( new ExecuteSameRequestWithModelDetailsAction );
-        $payment->addAction( new GetHttpRequestAction );
+        $payment->addApi($api);
+        $payment->addExtension(new EndlessCycleDetectorExtension());
+        $payment->addAction(new CaptureAction());
+        $payment->addAction(new FillOrderDetailsAction());
+        $payment->addAction(new StatusAction());
+        $payment->addAction(new ExecuteSameRequestWithModelDetailsAction());
+        $payment->addAction(new GetHttpRequestAction());
 
         return $payment;
     }
