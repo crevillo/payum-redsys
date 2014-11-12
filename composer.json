@@ -1,9 +1,10 @@
 {
-    "name": "payum/redsys",
+    "name": "crevillo/payum-redsys",
     "type": "library",
-    "description": "Redsys pament",
+    "description": "Redsys payment",
     "keywords": [
         "payment",
+        "payum",
         "redsys"
     ],
     "homepage": "http://payum.org",
@@ -33,9 +34,9 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-0": { "Payum\\Redsys": "" }
+        "psr-0": { "Crevillo\\Payum\\Redsys": "" }
     },
-    "target-dir": "Payum/Redsys",
+    "target-dir": "Crevillo/Payum/Redsys",
     "extra": {
         "branch-alias": {
             "dev-master": "0.13-dev"

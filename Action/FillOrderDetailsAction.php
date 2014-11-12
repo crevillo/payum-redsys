@@ -1,5 +1,5 @@
 <?php
-namespace Payum\Redsys\Action;
+namespace Crevillo\Payum\Redsys\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
@@ -7,7 +7,7 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Request\FillOrderDetails;
 use Payum\Core\Security\GenericTokenFactoryInterface;
-use Payum\Redsys\Api;
+use Crevillo\Payum\Redsys\Api;
 
 class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
 {
