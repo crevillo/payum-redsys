@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="payum.redsys.api.class">Crevillo\Payum\Redsys\Api</parameter>
+        <parameter key="payum.redsys.action.capture.class">Crevillo\Payum\Redsys\Action\CaptureAction</parameter>
+        <parameter key="payum.redsys.action.fill_order_details.class">Crevillo\Payum\Redsys\Action\FillOrderDetailsAction</parameter>
+        <parameter key="payum.redsys.action.status.class">Crevillo\Payum\Redsys\Action\StatusAction</parameter>
+    </parameters>
+
+    <services>
+        <service
+            id="payum.redsys.api.prototype"
+            class="%payum.redsys.api.class%"
+            public="false"
+        >
+            <argument type="collection">
+                <!-- It is template service. The real service will be created by RedsysPaymentFactory -->
+            </argument>
+        </service>
+
+        <service
+            id="payum.redsys.action.capture"
+            class="%payum.redsys.action.capture.class%"
+            public="false"
+        >
+            <tag name="payum.action" factory="redsys" />
+        </service>
+
+        <service
+            id="payum.redsys.action.fill_order_details"
+            class="%payum.redsys.action.fill_order_details.class%"
+            public="false"
+        >
+            <argument type="service" id="payum.security.token_factory" />
+            <tag name="payum.action" factory="redsys" />
+        </service>
+
+        <service
+            id="payum.redsys.action.status"
+            class="%payum.redsys.action.status.class%"
+            public="false"
+        >
+            <tag name="payum.action" factory="redsys" />
+        </service>
+
+    </services>
+</container>
