@@ -13,7 +13,7 @@ class Api
         'merchant_code' => null,
         'terminal' => null,
         'secret_key' => null,
-        'url' => null
+        'sandbox' => true
     );
 
     /**
