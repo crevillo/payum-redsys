@@ -6,7 +6,7 @@
  * Time: 13:42
  */
 
-namespace Payum\Redsys\Action;
+namespace Crevillo\Payum\Redsys\Action;
 
 use Payum\Core\Action\PaymentAwareAction;
 use Payum\Core\ApiAwareInterface;
@@ -17,7 +17,7 @@ use Payum\Core\Reply\HttpPostRedirect;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\Capture;
 use Payum\Core\Request\GetHttpRequest;
-use Payum\Redsys\Api;
+use Crevillo\Payum\Redsys\Api;
 
 class CaptureAction extends PaymentAwareAction implements ApiAwareInterface
 {

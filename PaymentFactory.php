@@ -7,15 +7,15 @@
  */
 
 
-namespace Payum\Redsys;
+namespace Crevillo\Payum\Redsys;
 
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\Action\GetHttpRequestAction;
 use Payum\Core\Extension\EndlessCycleDetectorExtension;
 use Payum\Core\Payment;
-use Payum\Redsys\Action\CaptureAction;
-use Payum\Redsys\Action\FillOrderDetailsAction;
-use Payum\Redsys\Action\StatusAction;
+use Crevillo\Payum\Redsys\Action\CaptureAction;
+use Crevillo\Payum\Redsys\Action\FillOrderDetailsAction;
+use Crevillo\Payum\Redsys\Action\StatusAction;
 
 abstract class PaymentFactory
 {

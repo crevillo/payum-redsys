@@ -22,12 +22,12 @@ We have to only add a the payment factory. All the rest remain the same:
 <?php
 //config.php
 
-use Payum\Redsys\Api as RedsysApi;
-use Payum\Redsys\PaymentFactory as RedsysPaymentFactory;
+use Crevillo\Payum\Redsys\Api as RedsysApi;
+use Crevillo\Payum\Redsys\PaymentFactory as RedsysPaymentFactory;
 
 // ...
 
-$payments['redsys'] = Be2BillPaymentFactory::create(new Redsys(array(
+$payments['redsys'] = RedsysPaymentFactory::create(new RedsysApi(array(
    'identifier' => 'REPLACE WITH YOURS',
    'password' => 'REPLACE WITH YOURS',
    'sandbox' => true

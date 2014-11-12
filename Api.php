@@ -6,7 +6,7 @@
  * Time: 13:55
  */
 
-namespace Payum\Redsys;
+namespace Crevillo\Payum\Redsys;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;

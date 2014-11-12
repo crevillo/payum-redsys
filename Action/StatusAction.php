@@ -1,5 +1,5 @@
 <?php
-namespace Payum\Redsys\Action;
+namespace Crevillo\Payum\Redsys\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
