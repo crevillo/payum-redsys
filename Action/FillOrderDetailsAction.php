@@ -92,7 +92,7 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
         }
 
         // finally build the signature
-        $details['Ds_Merchant_MerchantSignature'] = $this->api->buildSignature($details);
+        $details['Ds_Merchant_MerchantSignature'] = $this->api->sign($details);
 
         $order->setDetails( $details );
     }

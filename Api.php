@@ -130,7 +130,7 @@ class Api
      *
      * @return string
      */
-    public function buildSignature($params)
+    public function sign(array $params)
     {
         $msgToSign = $params['Ds_Merchant_Amount']
             . $params['Ds_Merchant_Order']
