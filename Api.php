@@ -76,22 +76,14 @@ class Api
     }
 
     /**
-     * Prepare the payment depending on the order and the token
+     * Complete payment details
      *
-     * @param OrderInterface $order
-     * @param TokenInterface $token
+     * @param array $details
      *
      * @return array
      */
-    public function preparePayment(OrderInterface $order, TokenInterface $token)
+    public function completePaymentDetails(array $details)
     {
-        $details = $order->getDetails();
-
-        $details['Ds_Merchant_Amount'] = $order->getTotalAmount();
-
-        $details['Ds_Merchant_Currency'] = $this->currencies[$order->getCurrencyCode()];
-
-        $details['Ds_Merchant_Order'] = $this->ensureCorrectOrderNumber( $order->getNumber() );
 
         // following values can be addded to the details
         // order when building it. If they are not passed, values
@@ -118,17 +110,19 @@ class Api
             $details['Ds_Merchant_ProductDescription'] = $this->options['product_description'];
         }
 
-        // notification url where the bank will post the response
-        $details['Ds_Merchant_MerchantURL'] = $token->getTargetUrl();
-
-        // return url in case of payment done
-        $details['Ds_Merchant_UrlOK'] = $token->getAfterUrl();
-
-        // return url in case of payment cancel. same as above
-        $details['Ds_Merchant_UrlKO'] = $token->getAfterUrl();
-        $details['Ds_Merchant_MerchantSignature'] = $this->signature( $details );
-
         return $details;
+    }
+
+    /**
+     * Get currency code as needed for the bank
+     *
+     * @param $currency
+     *
+     * @return mixed
+     */
+    public function getRedsysCurrencyCode( $currency )
+    {
+        return $this->currencies[$currency];
     }
 
     /**
@@ -149,7 +143,7 @@ class Api
      *
      * @return string
      */
-    private function ensureCorrectOrderNumber($orderNumber)
+    public function ensureCorrectOrderNumber($orderNumber)
     {
         // add 0 to the left in case length of the order number is less than 4
         $orderNumber = str_pad( $orderNumber, 4, '0', STR_PAD_LEFT );
@@ -174,7 +168,7 @@ class Api
      *
      * @return string
      */
-    private function signature($params)
+    public function buildSignature($params)
     {
         $msgToSign = $params['Ds_Merchant_Amount']
             . $params['Ds_Merchant_Order']
