@@ -55,7 +55,7 @@ class CaptureAction extends PaymentAwareAction implements ApiAwareInterface
         if (false == $model['Ds_Response']) {
             throw new HttpPostRedirect(
                 $this->api->getRedsysUrl(),
-                $this->api->addMerchantDataToPayment( $model->toUnsafeArray() )
+                $model->toUnsafeArray()
             );
         }
     }
