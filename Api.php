@@ -70,9 +70,9 @@ class Api
      */
     public function getRedsysUrl()
     {
-        return $this->options['sanbox']
-            ? 'https://sis-t.redsys.es:25443/canales'
-            : 'https://sis.redsys.es/canales/';
+        return $this->options['sandbox']
+            ? 'https://sis-t.sermepa.es:25443/sis/realizarPago'
+            : 'https://sis.sermepa.es/sis/realizarPago';
     }
 
     /**
