@@ -56,7 +56,7 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
 
         $details['Ds_Merchant_Amount'] = $order->getTotalAmount();
 
-        $details['Ds_Merchant_Currency'] = $this->api->getRedsysCurrencyCode($order->getCurrencyCode());
+        $details['Ds_Merchant_Currency'] = $this->api->getISO4127($order->getCurrencyCode());
 
         $details['Ds_Merchant_Order'] = $this->api->ensureCorrectOrderNumber($order->getNumber());
 

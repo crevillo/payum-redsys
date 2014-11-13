@@ -120,7 +120,7 @@ class Api
      *
      * @return mixed
      */
-    public function getRedsysCurrencyCode( $currency )
+    public function getISO4127( $currency )
     {
         return $this->currencies[$currency];
     }
