@@ -76,59 +76,15 @@ class Api
     }
 
     /**
-     * Prepare the payment depending on the order and the token
+     * Get currency code as needed for the bank
      *
-     * @param OrderInterface $order
-     * @param TokenInterface $token
+     * @param $currency
      *
-     * @return array
+     * @return mixed
      */
-    public function preparePayment(OrderInterface $order, TokenInterface $token)
+    public function getISO4127( $currency )
     {
-        $details = $order->getDetails();
-
-        $details['Ds_Merchant_Amount'] = $order->getTotalAmount();
-
-        $details['Ds_Merchant_Currency'] = $this->currencies[$order->getCurrencyCode()];
-
-        $details['Ds_Merchant_Order'] = $this->ensureCorrectOrderNumber( $order->getNumber() );
-
-        // following values can be addded to the details
-        // order when building it. If they are not passed, values
-        // will be taken from the default options if present
-        // in case of Ds_Merchant_TransactionType, as its mandatory
-        // 0 will be asigned in case value is not present in the
-        // order details or in the options.
-        if (!isset( $details['Ds_Merchant_TransactionType'] )) {
-            $details['Ds_Merchant_TransactionType'] = isset( $this->options['default_transaction_type'] )
-                ? $this->options['default_transaction_type'] : self::TRANSACTIONTYPE_DEFAULT;
-        }
-
-        // set customer language to spanish in case not provided
-        if (!isset( $details['Ds_Merchant_ConsumerLanguage'] )) {
-            $details['Ds_Merchant_ConsumerLanguage'] = self::CONSUMERLANGUAGE_SPANISH;
-        }
-
-        // these following to are not mandatory. only filled if present in the
-        // order details or in the options
-        if (!isset( $details['Ds_Merchant_MerchantName'] ) && isset( $this->options['merchant_name'] )) {
-            $details['Ds_Merchant_MerchantName'] = $this->options['merchant_name'];
-        }
-        if (!isset( $details['Ds_Merchant_ProductDescription'] ) && isset( $this->options['product_description'] )) {
-            $details['Ds_Merchant_ProductDescription'] = $this->options['product_description'];
-        }
-
-        // notification url where the bank will post the response
-        $details['Ds_Merchant_MerchantURL'] = $token->getTargetUrl();
-
-        // return url in case of payment done
-        $details['Ds_Merchant_UrlOK'] = $token->getAfterUrl();
-
-        // return url in case of payment cancel. same as above
-        $details['Ds_Merchant_UrlKO'] = $token->getAfterUrl();
-        $details['Ds_Merchant_MerchantSignature'] = $this->signature( $details );
-
-        return $details;
+        return $this->currencies[$currency];
     }
 
     /**
@@ -149,7 +105,7 @@ class Api
      *
      * @return string
      */
-    private function ensureCorrectOrderNumber($orderNumber)
+    public function ensureCorrectOrderNumber($orderNumber)
     {
         // add 0 to the left in case length of the order number is less than 4
         $orderNumber = str_pad( $orderNumber, 4, '0', STR_PAD_LEFT );
@@ -174,7 +130,7 @@ class Api
      *
      * @return string
      */
-    private function signature($params)
+    public function sign(array $params)
     {
         $msgToSign = $params['Ds_Merchant_Amount']
             . $params['Ds_Merchant_Order']
@@ -184,20 +140,7 @@ class Api
             . $params['Ds_Merchant_MerchantURL']
             . $this->options['secret_key'];
 
-        return strtoupper( sha1( $msgToSign ) );
-    }
-
-    /**
-     * Adds merchant code and merchant terminal to the payment built
-     * in the fillorderdetails action
-     */
-    public function addMerchantDataToPayment(array $payment)
-    {
-        $payment['Ds_Merchant_MerchantCode'] = $this->options['merchant_code'];
-
-        $payment['Ds_Merchant_Terminal'] = $this->options['terminal'];
-
-        return $payment;
+        return strtoupper(sha1($msgToSign));
     }
 
     /**
@@ -216,6 +159,73 @@ class Api
             . $response['Ds_Response']
             . $this->options['secret_key'];
 
-        return strtoupper( sha1( $msgToSign ) ) == $response['Ds_Signature'];
+        return strtoupper(sha1($msgToSign)) == $response['Ds_Signature'];
+    }
+
+    /**
+     * Getter for merchant_code option
+     *
+     * @return string
+     */
+    public function getMerchantCode()
+    {
+        return $this->options['merchant_code'];
+    }
+
+    /**
+     * Getter for terminal code
+     *
+     * @return string
+     */
+    public function getMerchantTerminalCode()
+    {
+        return $this->options['terminal'];
+    }
+
+    /**
+     * Getter for Transaction Type.
+     *
+     * If not set in the options if will return default value (0)
+     *
+     * @return int
+     */
+    public function getTransactionType()
+    {
+        return isset($this->options['default_transaction_type'])
+            ? $this->options['default_transaction_type'] : self::TRANSACTIONTYPE_DEFAULT;
+    }
+
+    /**
+     * Returns merchant name if provided in options
+     * or empty if not provided
+     *
+     * @return string
+     */
+    public function getMerchantName()
+    {
+        return !empty( $this->options['merchant_name'] )
+            ? $this->options['merchant_name'] : '';
+    }
+
+    /**
+     * Returns merchant product description if provided in options
+     * or empty if not provided
+     *
+     * @return string
+     */
+    public function getMerchantProductDescription()
+    {
+        return !empty( $this->options['product_description'] )
+            ? $this->options['product_description'] : '';
+    }
+
+    /**
+     * Getter for default language code
+     *
+     * @return string
+     */
+    public function getDefaultLanguageCode()
+    {
+        return self::CONSUMERLANGUAGE_SPANISH;
     }
 }
