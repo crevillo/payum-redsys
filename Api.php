@@ -3,6 +3,7 @@ namespace Crevillo\Payum\Redsys;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
+use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
 use Payum\Core\Exception\LogicException;
 
@@ -133,7 +134,7 @@ class Api
      *
      * @return string
      */
-    public function sign(array $params)
+    public function sign(ArrayObject $params)
     {
         $msgToSign = $params['Ds_Merchant_Amount']
             . $params['Ds_Merchant_Order']
