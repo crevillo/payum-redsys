@@ -4,8 +4,7 @@ namespace Crevillo\Payum\Redsys;
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
 use Payum\Core\Exception\InvalidArgumentException;
-use Payum\Core\Model\OrderInterface;
-use Payum\Core\Security\TokenInterface;
+use Payum\Core\Exception\LogicException;
 
 class Api
 {
@@ -84,6 +83,10 @@ class Api
      */
     public function getISO4127( $currency )
     {
+        if (!isset($this->currencies[$currency])) {
+            throw new LogicException( 'Currency not allowed by the payment gateway.');
+        }
+
         return $this->currencies[$currency];
     }
 
@@ -116,7 +119,7 @@ class Api
         if (!ctype_digit( $firstPartOfTheOrderNumber ) ||
             !ctype_alnum( $secondPartOfTheOrderNumber )
         ) {
-            throw new InvalidArgumentException( 'The order number is not correct.' );
+            throw new LogicException('The payment gateway doesn\'t allow order numbers with this format.');
         }
 
         return $orderNumber;
