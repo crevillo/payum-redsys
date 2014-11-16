@@ -42,13 +42,14 @@ class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
         $this->payment->execute($httpRequest = new GetHttpRequest());
-
+        if (null === $httpRequest->request['Ds_Signature']) {
+            throw new HttpResponse('The notification is invalid', 400);
+        }
         if (false == $this->api->validateNotificationSignature($httpRequest->request)) {
-            throw new HttpResponse('', 400);
+            throw new HttpResponse('The notification is invalid', 400);
         }
 
-        $details['request'] = $httpRequest->request;
-        $details['query'] = $httpRequest->query;
+        $details->replace($httpRequest->request);
 
         throw new HttpResponse('', 200);
     }
