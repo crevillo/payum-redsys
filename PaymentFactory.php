@@ -1,6 +1,7 @@
 <?php
 namespace Crevillo\Payum\Redsys;
 
+use Crevillo\Payum\Redsys\Action\NotifyAction;
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\Action\GetHttpRequestAction;
 use Payum\Core\Extension\EndlessCycleDetectorExtension;
@@ -21,6 +22,7 @@ abstract class PaymentFactory
         $payment->addApi($api);
         $payment->addExtension(new EndlessCycleDetectorExtension());
         $payment->addAction(new CaptureAction());
+        $payment->addAction(new NotifyAction());
         $payment->addAction(new FillOrderDetailsAction());
         $payment->addAction(new StatusAction());
         $payment->addAction(new ExecuteSameRequestWithModelDetailsAction());
