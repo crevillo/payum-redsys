@@ -13,6 +13,8 @@ class Api
 
     const CONSUMERLANGUAGE_SPANISH = '001';
 
+    const DS_RESPONSE_CANCELED = '0184';
+
     const STATUS_CAPTURED = 1;
 
     const STATUS_CANCELED = 2;
