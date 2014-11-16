@@ -45,12 +45,18 @@ class CaptureAction implements ActionInterface, ApiAwareInterface
             'Ds_Merchant_Currency',
             'Ds_Merchant_TransactionType',
             'Ds_Merchant_MerchantURL',
-            'Ds_Merchant_UrlOK',
-            'Ds_Merchant_UrlKO',
         ));
 
         $details['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
         $details['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
+
+        if (false == $details['Ds_Merchant_UrlOK'] && $request->getToken()) {
+            $details['Ds_Merchant_UrlOK'] = $request->getToken()->getTargetUrl();
+        }
+
+        if (false == $details['Ds_Merchant_UrlKO'] && $request->getToken()) {
+            $details['Ds_Merchant_UrlKO'] = $request->getToken()->getTargetUrl();
+        }
 
         if (false == $details['Ds_Merchant_MerchantSignature']) {
             $details['Ds_Merchant_MerchantSignature'] = $this->api->sign($details->toUnsafeArray());

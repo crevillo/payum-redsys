@@ -3,6 +3,7 @@ namespace Crevillo\Payum\Redsys;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
+use Payum\Core\Bridge\Buzz\ClientFactory;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
 use Payum\Core\Exception\LogicException;
@@ -14,10 +15,6 @@ class Api
     const CONSUMERLANGUAGE_SPANISH = '001';
 
     const DS_RESPONSE_CANCELED = '0184';
-
-    const STATUS_CAPTURED = 1;
-
-    const STATUS_CANCELED = 2;
 
     protected $options = array(
         'merchant_code' => null,
@@ -51,7 +48,7 @@ class Api
 
     public function __construct(array $options, ClientInterface $client = null)
     {
-        $this->client = $client ?: new Curl();
+        $this->client = $client ?: ClientFactory::createCurl();
 
         $this->options = array_replace( $this->options, $options );
 
@@ -70,20 +67,17 @@ class Api
     }
 
     /**
-     * Returns the url where we need to send the post request
-     *
      * @return string
      */
     public function getRedsysUrl()
     {
-        return $this->options['sandbox']
-            ? 'https://sis-t.sermepa.es:25443/sis/realizarPago'
-            : 'https://sis.sermepa.es/sis/realizarPago';
+        return $this->options['sandbox'] ?
+            'https://sis-t.sermepa.es:25443/sis/realizarPago' :
+            'https://sis.sermepa.es/sis/realizarPago'
+        ;
     }
 
     /**
-     * Get currency code as needed for the bank
-     *
      * @param $currency
      *
      * @return mixed
@@ -95,6 +89,22 @@ class Api
         }
 
         return $this->currencies[$currency];
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantCode()
+    {
+        return $this->options['merchant_code'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantTerminalCode()
+    {
+        return $this->options['terminal'];
     }
 
     /**
@@ -118,14 +128,12 @@ class Api
     public function ensureCorrectOrderNumber($orderNumber)
     {
         // add 0 to the left in case length of the order number is less than 4
-        $orderNumber = str_pad( $orderNumber, 4, '0', STR_PAD_LEFT );
+        $orderNumber = str_pad($orderNumber, 4, '0', STR_PAD_LEFT);
 
-        $firstPartOfTheOrderNumber = substr( $orderNumber, 0, 4 );
-        $secondPartOfTheOrderNumber = substr( $orderNumber, 4, strlen( $orderNumber ) );
+        $firstPartOfTheOrderNumber = substr($orderNumber, 0, 4);
+        $secondPartOfTheOrderNumber = substr($orderNumber, 4, strlen($orderNumber));
 
-        if (!ctype_digit( $firstPartOfTheOrderNumber ) ||
-            !ctype_alnum( $secondPartOfTheOrderNumber )
-        ) {
+        if (!ctype_digit($firstPartOfTheOrderNumber) || !ctype_alnum($secondPartOfTheOrderNumber)) {
             throw new LogicException('The payment gateway doesn\'t allow order numbers with this format.');
         }
 
@@ -153,9 +161,6 @@ class Api
     }
 
     /**
-     * Calculate the signature depending on some other values
-     * sent in the payment.
-     *
      * @param array $params
      *
      * @return string
@@ -171,72 +176,5 @@ class Api
             $params['Ds_Merchant_MerchantURL'].
             $this->options['secret_key']
         ));
-    }
-
-    /**
-     * Getter for merchant_code option
-     *
-     * @return string
-     */
-    public function getMerchantCode()
-    {
-        return $this->options['merchant_code'];
-    }
-
-    /**
-     * Getter for terminal code
-     *
-     * @return string
-     */
-    public function getMerchantTerminalCode()
-    {
-        return $this->options['terminal'];
-    }
-
-    /**
-     * Getter for Transaction Type.
-     *
-     * If not set in the options if will return default value (0)
-     *
-     * @return int
-     */
-    public function getTransactionType()
-    {
-        return isset($this->options['default_transaction_type'])
-            ? $this->options['default_transaction_type'] : self::TRANSACTIONTYPE_AUTHORIZATION;
-    }
-
-    /**
-     * Returns merchant name if provided in options
-     * or empty if not provided
-     *
-     * @return string
-     */
-    public function getMerchantName()
-    {
-        return !empty( $this->options['merchant_name'] )
-            ? $this->options['merchant_name'] : '';
-    }
-
-    /**
-     * Returns merchant product description if provided in options
-     * or empty if not provided
-     *
-     * @return string
-     */
-    public function getMerchantProductDescription()
-    {
-        return !empty( $this->options['product_description'] )
-            ? $this->options['product_description'] : '';
-    }
-
-    /**
-     * Getter for default language code
-     *
-     * @return string
-     */
-    public function getDefaultLanguageCode()
-    {
-        return self::CONSUMERLANGUAGE_SPANISH;
     }
 }
