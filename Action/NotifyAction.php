@@ -3,6 +3,7 @@ namespace Crevillo\Payum\Redsys\Action;
 
 use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Action\PaymentAwareAction;
+use Payum\Core\ApiAwareInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
@@ -10,7 +11,7 @@ use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Request\Notify;
 
-class NotifyAction extends PaymentAwareAction
+class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
 {
     /**
      * @var Api
