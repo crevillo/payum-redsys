@@ -9,6 +9,7 @@
         <parameter key="crevillo.payum.redsys.action.capture.class">Crevillo\Payum\Redsys\Action\CaptureAction</parameter>
         <parameter key="crevillo.payum.redsys.action.fill_order_details.class">Crevillo\Payum\Redsys\Action\FillOrderDetailsAction</parameter>
         <parameter key="crevillo.payum.redsys.action.status.class">Crevillo\Payum\Redsys\Action\StatusAction</parameter>
+        <parameter key="crevillo.payum.redsys.action.notify.class">Crevillo\Payum\Redsys\Action\NotifyAction</parameter>
     </parameters>
 
     <services>
@@ -25,6 +26,14 @@
         <service
             id="crevillo.payum.redsys.action.capture"
             class="%crevillo.payum.redsys.action.capture.class%"
+            public="false"
+        >
+            <tag name="payum.action" factory="redsys" />
+        </service>
+
+        <service
+            id="crevillo.payum.redsys.action.notify"
+            class="%crevillo.payum.redsys.action.notify.class%"
             public="false"
         >
             <tag name="payum.action" factory="redsys" />

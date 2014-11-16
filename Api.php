@@ -9,9 +9,15 @@ use Payum\Core\Exception\LogicException;
 
 class Api
 {
-    const TRANSACTIONTYPE_DEFAULT = 0;
+    const TRANSACTIONTYPE_AUTHORIZATION = 0;
 
     const CONSUMERLANGUAGE_SPANISH = '001';
+
+    const DS_RESPONSE_CANCELED = '0184';
+
+    const STATUS_CAPTURED = 1;
+
+    const STATUS_CANCELED = 2;
 
     protected $options = array(
         'merchant_code' => null,
@@ -127,6 +133,26 @@ class Api
     }
 
     /**
+     * @param array $notification
+     *
+     * @return bool
+     */
+    public function validateNotificationSignature(array $notification)
+    {
+        $notification = ArrayObject::ensureArrayObject($notification);
+        $notification->validateNotEmpty('Ds_Signature');
+
+        return $notification['Ds_Signature'] === strtoupper(sha1(
+            $notification['Ds_Amount'].
+            $notification['Ds_Order'].
+            $this->options['merchant_code'].
+            $notification['Ds_Currency'].
+            $notification['Ds_Response'].
+            $this->options['secret_key']
+        ));
+    }
+
+    /**
      * Calculate the signature depending on some other values
      * sent in the payment.
      *
@@ -134,36 +160,17 @@ class Api
      *
      * @return string
      */
-    public function sign(ArrayObject $params)
+    public function sign(array $params)
     {
-        $msgToSign = $params['Ds_Merchant_Amount']
-            . $params['Ds_Merchant_Order']
-            . $this->options['merchant_code']
-            . $params['Ds_Merchant_Currency']
-            . $params['Ds_Merchant_TransactionType']
-            . $params['Ds_Merchant_MerchantURL']
-            . $this->options['secret_key'];
-
-        return strtoupper(sha1($msgToSign));
-    }
-
-    /**
-     * Validate the response to be sure the bank is sending it
-     *
-     * @param array $response
-     *
-     * @return bool
-     */
-    public function validateGatewayResponse($response)
-    {
-        $msgToSign = $response['Ds_Amount']
-            . $response['Ds_Order']
-            . $this->options['merchant_code']
-            . $response['Ds_Currency']
-            . $response['Ds_Response']
-            . $this->options['secret_key'];
-
-        return strtoupper(sha1($msgToSign)) == $response['Ds_Signature'];
+        return strtoupper(sha1(
+            $params['Ds_Merchant_Amount'].
+            $params['Ds_Merchant_Order'].
+            $this->options['merchant_code'].
+            $params['Ds_Merchant_Currency'].
+            $params['Ds_Merchant_TransactionType'].
+            $params['Ds_Merchant_MerchantURL'].
+            $this->options['secret_key']
+        ));
     }
 
     /**
@@ -196,7 +203,7 @@ class Api
     public function getTransactionType()
     {
         return isset($this->options['default_transaction_type'])
-            ? $this->options['default_transaction_type'] : self::TRANSACTIONTYPE_DEFAULT;
+            ? $this->options['default_transaction_type'] : self::TRANSACTIONTYPE_AUTHORIZATION;
     }
 
     /**
