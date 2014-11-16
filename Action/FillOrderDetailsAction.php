@@ -81,8 +81,6 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
             $details['Ds_Merchant_ConsumerLanguage'] = Api::CONSUMERLANGUAGE_SPANISH;
         }
 
-        $details['Ds_Merchant_MerchantSignature'] = $this->api->sign($details->toUnsafeArray());
-
         $order->setDetails($details);
     }
 
