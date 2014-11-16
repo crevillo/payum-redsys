@@ -47,8 +47,6 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-
-
     /**
      * @test
      *
@@ -89,7 +87,6 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             'terminal' => 'a_terminal'
         ));
     }
-
 
     /**
      * @test
