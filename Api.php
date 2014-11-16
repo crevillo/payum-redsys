@@ -134,17 +134,17 @@ class Api
      *
      * @return string
      */
-    public function sign(ArrayObject $params)
+    public function sign(array $params)
     {
-        $msgToSign = $params['Ds_Merchant_Amount']
-            . $params['Ds_Merchant_Order']
-            . $this->options['merchant_code']
-            . $params['Ds_Merchant_Currency']
-            . $params['Ds_Merchant_TransactionType']
-            . $params['Ds_Merchant_MerchantURL']
-            . $this->options['secret_key'];
-
-        return strtoupper(sha1($msgToSign));
+        return strtoupper(sha1(
+            $params['Ds_Merchant_Amount'].
+            $params['Ds_Merchant_Order'].
+            $this->options['merchant_code'].
+            $params['Ds_Merchant_Currency'].
+            $params['Ds_Merchant_TransactionType'].
+            $params['Ds_Merchant_MerchantURL'].
+            $this->options['secret_key']
+        ));
     }
 
     /**

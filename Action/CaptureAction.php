@@ -36,27 +36,52 @@ class CaptureAction extends PaymentAwareAction implements ApiAwareInterface
     public function execute($request)
     {
         /** @var $request Capture */
-        RequestNotSupportedException::assertSupports( $this, $request );
+        RequestNotSupportedException::assertSupports($this, $request);
 
-        $model = ArrayObject::ensureArrayObject( $request->getModel() );
+        $details = ArrayObject::ensureArrayObject($request->getModel());
 
-        $httpRequest = new GetHttpRequest();
-        $this->payment->execute( $httpRequest );
+        $details->validatedKeysSet(array(
+            'Ds_Merchant_Amount',
+            'Ds_Merchant_Order',
+            'Ds_Merchant_Currency',
+            'Ds_Merchant_TransactionType',
+            'Ds_Merchant_MerchantURL'
+        ));
 
-        //we are back from redsys site so we have to just update model.
-        if (!empty( $httpRequest->request ) &&
-            $this->api->validateGatewayResponse( $httpRequest->request )
-        ) {
-            $model->replace( $httpRequest->request );
-            // throw empty response so bank receive a response with code 200
-            throw new HttpResponse('', 200);
+        // return url in case of payment done
+        if (false == $details['Ds_Merchant_UrlOK'] && $request->getToken()) {
+            $details['Ds_Merchant_UrlOK'] = $request->getToken()->getTargetUrl();
         }
 
-        if (false == $model['Ds_Response']) {
-            throw new HttpPostRedirect(
-                $this->api->getRedsysUrl(),
-                $model->toUnsafeArray()
-            );
+        // return url in case of payment cancel. same as above
+        if (false == $details['Ds_Merchant_UrlKO'] && $request->getToken()) {
+            $details['Ds_Merchant_UrlKO'] = $request->getToken()->getTargetUrl();
+        }
+
+        $details['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
+        $details['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
+
+        if (false == $details['Ds_Merchant_MerchantSignature']) {
+            $details['Ds_Merchant_MerchantSignature'] = $this->api->sign($details->toUnsafeArray());
+
+            throw new HttpPostRedirect($this->api->getRedsysUrl(), $details->toUnsafeArray());
+        }
+
+        $httpRequest = new GetHttpRequest();
+        $this->payment->execute($httpRequest);
+
+//        we are back from redsys site so we have to just update model.
+//        if (!empty( $httpRequest->request ) &&
+//            $this->api->validateGatewayResponse( $httpRequest->request )
+//        ) {
+//            $details->replace( $httpRequest->request );
+//             throw empty response so bank receive a response with code 200
+//            throw new HttpResponse('', 200);
+//        }
+
+        if (false == $details['Ds_Response']) {
+//            die;
+
         }
     }
 
