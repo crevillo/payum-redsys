@@ -16,6 +16,10 @@ class Api
 
     const DS_RESPONSE_CANCELED = '0184';
 
+    const ORDER_NUMBER_MINIMUM_LENGTH = 4;
+
+    const ORDER_NUMBER_MAXIMUM_LENGHT = 12;
+
     protected $options = array(
         'merchant_code' => null,
         'terminal' => null,
@@ -127,15 +131,15 @@ class Api
      */
     public function ensureCorrectOrderNumber($orderNumber)
     {
-        if (strlen($orderNumber) > 12 ) {
+        if (strlen($orderNumber) > self::ORDER_NUMBER_MAXIMUM_LENGHT ) {
             throw new LogicException('Order number can\'t have more than 12 characters');
         }
 
         // add 0 to the left in case length of the order number is less than 4
-        $orderNumber = str_pad($orderNumber, 4, '0', STR_PAD_LEFT);
+        $orderNumber = str_pad($orderNumber, self::ORDER_NUMBER_MINIMUM_LENGTH, '0', STR_PAD_LEFT);
 
-        $firstPartOfTheOrderNumber = substr($orderNumber, 0, 4);
-        $secondPartOfTheOrderNumber = substr($orderNumber, 4, strlen($orderNumber));
+        $firstPartOfTheOrderNumber = substr($orderNumber, 0, self::ORDER_NUMBER_MINIMUM_LENGTH);
+        $secondPartOfTheOrderNumber = substr($orderNumber, self::ORDER_NUMBER_MINIMUM_LENGTH, strlen($orderNumber));
 
         if (!ctype_digit($firstPartOfTheOrderNumber) ||
             (!empty($secondPartOfTheOrderNumber) && !ctype_alnum($secondPartOfTheOrderNumber))) {
