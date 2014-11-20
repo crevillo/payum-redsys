@@ -127,13 +127,18 @@ class Api
      */
     public function ensureCorrectOrderNumber($orderNumber)
     {
+        if (strlen($orderNumber) > 12 ) {
+            throw new LogicException('Order number can\'t have more than 12 characters');
+        }
+
         // add 0 to the left in case length of the order number is less than 4
         $orderNumber = str_pad($orderNumber, 4, '0', STR_PAD_LEFT);
 
         $firstPartOfTheOrderNumber = substr($orderNumber, 0, 4);
         $secondPartOfTheOrderNumber = substr($orderNumber, 4, strlen($orderNumber));
 
-        if (!ctype_digit($firstPartOfTheOrderNumber) || !ctype_alnum($secondPartOfTheOrderNumber)) {
+        if (!ctype_digit($firstPartOfTheOrderNumber) ||
+            (!empty($secondPartOfTheOrderNumber) && !ctype_alnum($secondPartOfTheOrderNumber))) {
             throw new LogicException('The payment gateway doesn\'t allow order numbers with this format.');
         }
 
