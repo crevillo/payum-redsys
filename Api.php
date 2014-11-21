@@ -138,11 +138,7 @@ class Api
         // add 0 to the left in case length of the order number is less than 4
         $orderNumber = str_pad($orderNumber, self::ORDER_NUMBER_MINIMUM_LENGTH, '0', STR_PAD_LEFT);
 
-        $firstPartOfTheOrderNumber = substr($orderNumber, 0, self::ORDER_NUMBER_MINIMUM_LENGTH);
-        $secondPartOfTheOrderNumber = substr($orderNumber, self::ORDER_NUMBER_MINIMUM_LENGTH, strlen($orderNumber));
-
-        if (!ctype_digit($firstPartOfTheOrderNumber) ||
-            (!empty($secondPartOfTheOrderNumber) && !ctype_alnum($secondPartOfTheOrderNumber))) {
+        if (!preg_match('/^[0-9]{4}[a-z0-9]{0,12}$/i', $orderNumber)) {
             throw new LogicException('The payment gateway doesn\'t allow order numbers with this format.');
         }
 
