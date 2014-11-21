@@ -10,10 +10,11 @@ Provide integration of redsys/sermepa payments to [Payum](http://www.payum.org).
 * [Questions](https://github.com/crevillo/payum-redsys/issues)
 * [Issue Tracker](https://github.com/crevillo/payum-redsys/issues)
 * [Twitter](https://twitter.com/crevillo)
+* [Payum Documentation](http://payum.org/doc#Payum)
 
 ## Contributing
 
-Offline is an open source, community-driven project. Pull requests are very welcome.
+Payum Redsys is an open source, community-driven project. Pull requests are very welcome.
 
 ## Like it? Spread the word!
 
@@ -22,5 +23,5 @@ You can also star payum on [github](https://github.com/payum/payum) or [packagis
 
 ## License
 
-Offline is released under the [MIT License](LICENSE).
+Payum Redsys is released under the [MIT License](LICENSE).
 
