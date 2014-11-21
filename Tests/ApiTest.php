@@ -252,6 +252,17 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function shortOrderNumberProvider()
+    {
+        return array(
+            array('1', '0001'),
+            array('12', '0012'),
+            array('123', '0123'),
+            array('1234', '1234'),
+            array('1234a', '1234a')
+        );
+    }
+
     /**
      * @test
      *
@@ -271,15 +282,34 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($correctedOrderNumber, $api->ensureCorrectOrderNumber($orderNumber));
     }
 
-    public function shortOrderNumberProvider()
+    public function validOrderNumberProvider()
     {
         return array(
-            array('1', '0001'),
-            array('12', '0012'),
-            array('123', '0123'),
-            array('1234', '1234'),
-            array('1234a', '1234a')
+            array('1234'),
+            array('123412341234'),
+            array('1234aA'),
+            array('1234AABBCCDD'),
+            array('1234abcdefgh')
         );
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider validOrderNumberProvider
+     */
+    public function shouldReturnOrderNumberPassedIfValid($orderNumber)
+    {
+        $options = array(
+            'merchant_code' => 'a_merchant_code',
+            'terminal' => 'a_terminal',
+            'secret_key' => 'a_secret_key',
+            'sandbox' => true,
+        );
+
+        $api = new Api($options);
+
+        $this->assertEquals($orderNumber, $api->ensureCorrectOrderNumber($orderNumber));
     }
 
     /**
