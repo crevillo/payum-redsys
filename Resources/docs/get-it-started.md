@@ -38,6 +38,7 @@ $payments['redsys'] = RedsysPaymentFactory::create(new RedsysApi(array(
    'secret_key' => 'REPLACE WITH YOURS'
    'sandbox' => true
 )));
+```
 
 ## prepare.php
 
