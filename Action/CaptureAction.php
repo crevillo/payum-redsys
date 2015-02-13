@@ -9,13 +9,30 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpPostRedirect;
 use Payum\Core\Request\Capture;
 use Crevillo\Payum\Redsys\Api;
+use Payum\Core\Security\GenericTokenFactoryAwareInterface;
+use Payum\Core\Security\GenericTokenFactoryInterface;
 
-class CaptureAction implements ActionInterface, ApiAwareInterface
+class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
     /**
      * @var Api
      */
     protected $api;
+
+    /**
+     * @var GenericTokenFactoryInterface
+     */
+    protected $tokenFactory;
+
+    /**
+     * @param GenericTokenFactoryInterface $genericTokenFactory
+     *
+     * @return void
+     */
+    public function setGenericTokenFactory(GenericTokenFactoryInterface $genericTokenFactory = null)
+    {
+        $this->tokenFactory = $genericTokenFactory;
+    }
 
     /**
      * {@inheritDoc}
@@ -38,6 +55,15 @@ class CaptureAction implements ActionInterface, ApiAwareInterface
         RequestNotSupportedException::assertSupports($this, $request);
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
+
+        if (empty($details['Ds_Merchant_MerchantURL']) && $request->getToken() && $this->tokenFactory) {
+            $notifyToken = $this->tokenFactory->createNotifyToken(
+                $request->getToken()->getPaymentName(),
+                $request->getToken()->getDetails()
+            );
+
+            $details['Ds_Merchant_MerchantURL'] = $notifyToken->getTargetUrl();
+        }
 
         $details->validatedKeysSet(array(
             'Ds_Merchant_Amount',
