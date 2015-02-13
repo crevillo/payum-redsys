@@ -27,7 +27,7 @@ We have to only add the payment factory. All the rest remain the same:
 <?php
 //config.php
 
-use Crevillo\Payum\Redsys\PaymentFactory as RedsysPaymentFactory;
+use Payum\Core\Extension\GenericTokenFactoryExtension;
 
 // ...
 
@@ -37,6 +37,9 @@ $payments['redsys'] = $redsysPaymentFactory->create(array(
    'terminal' => 'REPLACE WITH YOURS', // normally '001'
    'secret_key' => 'REPLACE WITH YOURS'
    'sandbox' => true
+   
+    // uncomment if you want notify url to be generated automatically.
+    // 'payum.extension.token_factory' => new GenericTokenFactoryExtension($tokenFactory),
 ));
 ```
 
