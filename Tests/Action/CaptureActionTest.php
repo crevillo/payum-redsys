@@ -11,9 +11,9 @@ use Payum\Core\Tests\GenericActionTest;
 
 class CaptureActionTest extends GenericActionTest
 {
-    protected $actionClass = 'Crevillo\Payum\Redsys\Action\CaptureAction';
-
     protected $requestClass = 'Payum\Core\Request\Capture';
+
+    protected $actionClass = 'Crevillo\Payum\Redsys\Action\CaptureAction';
 
     /**
      * @test
