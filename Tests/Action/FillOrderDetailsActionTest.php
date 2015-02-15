@@ -16,16 +16,15 @@ class FillOrderDetailsActionTest extends GenericActionTest
     public function provideSupportedRequests()
     {
         return array(
-
-            array(new $this->requestClass(new Order, $this->getMock('Payum\Core\Security\TokenInterface'))),
+            array(new $this->requestClass(new Order())),
+            array(new $this->requestClass($this->getMock('Payum\Core\Model\OrderInterface'))),
+            array(new $this->requestClass(new Order(), $this->getMock('Payum\Core\Security\TokenInterface'))),
         );
     }
 
     public function provideNotSupportedRequests()
     {
         return array(
-            array(new $this->requestClass(new Order())),
-            array(new $this->requestClass($this->getMock('Payum\Core\Model\OrderInterface'))),
             array('foo'),
             array(array('foo')),
             array(new \stdClass()),
@@ -55,121 +54,6 @@ class FillOrderDetailsActionTest extends GenericActionTest
 
         $this->assertAttributeSame($expectedApi, 'api', $action);
     }
-
-    /**
-     * @test
-     *
-     * @expectedException \Payum\Core\Exception\LogicException
-     * @expectedExceptionMessage The merchant url is not provided. You have explicitly add it to the order details or inject the token factory
-     */
-    public function shouldThrowIfMerchantUrlIsNotSetAndNoTokenPresent()
-    {
-        $order = new Order;
-        $order->setNumber('1234');
-        $order->setCurrencyCode('USD');
-        $order->setTotalAmount(123);
-        $order->setDescription('the description');
-        $order->setClientId('theClientId');
-        $order->setClientEmail('theClientEmail');
-
-        $apiMock = $this->createApiMock();
-        $apiMock
-            ->expects($this->once())
-            ->method('ensureCorrectOrderNumber')
-            ->with($order->getNumber())
-            ->willReturn($order->getNumber())
-        ;
-
-        $apiMock
-            ->expects($this->once())
-            ->method('getISO4127')
-            ->with($order->getCurrencyCode())
-            ->willReturn(840)
-        ;
-
-        $apiMock
-            ->expects($this->once())
-            ->method('getMerchantCode')
-            ->willReturn('a_merchant_code')
-        ;
-
-        $apiMock
-            ->expects($this->once())
-            ->method('getMerchantTerminalCode')
-            ->willReturn('001')
-        ;
-
-        $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
-
-        $action = new FillOrderDetailsAction();
-        $action->setApi($apiMock);
-        $action->execute(new FillOrderDetails($order, $tokenMock ));
-    }
-
-    /**
-     * @test
-     *
-     */
-    public function shouldAddMissedDetailsIfNotSetAndTokenIsPresent()
-    {
-        $order = new Order;
-        $order->setNumber('1234');
-        $order->setCurrencyCode('USD');
-        $order->setTotalAmount(123);
-        $order->setDescription('the description');
-        $order->setClientId('theClientId');
-        $order->setClientEmail('theClientEmail');
-
-        $apiMock = $this->createApiMock();
-        $apiMock
-            ->expects($this->once())
-            ->method('ensureCorrectOrderNumber')
-            ->with($order->getNumber())
-            ->willReturn($order->getNumber())
-        ;
-
-        $apiMock
-            ->expects($this->once())
-            ->method('getISO4127')
-            ->with($order->getCurrencyCode())
-            ->willReturn(840)
-        ;
-
-        $apiMock
-            ->expects($this->once())
-            ->method('getMerchantCode')
-            ->willReturn('a_merchant_code')
-        ;
-
-        $apiMock
-            ->expects($this->once())
-            ->method('getMerchantTerminalCode')
-            ->willReturn('001')
-        ;
-
-        $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
-
-        $tokenFactoryMock = $this->getMock('Payum\Core\Security\GenericTokenFactoryInterface');
-        $tokenFactoryMock
-            ->expects($this->once())
-            ->method('createNotifyToken')
-            ->willReturn($tokenMock)
-        ;
-
-        $action = new FillOrderDetailsAction($tokenFactoryMock);
-        $action->setApi($apiMock);
-        $action->execute(new FillOrderDetails($order, $tokenMock ));
-        $details = $order->getDetails();
-
-        $this->assertNotEmpty($details);
-
-        $this->assertArrayHasKey('Ds_Merchant_MerchantURL', $details);
-        $this->assertArrayHasKey('Ds_Merchant_TransactionType', $details);
-        $this->assertArrayHasKey('Ds_Merchant_ConsumerLanguage', $details);
-        $this->assertEquals(0, $details['Ds_Merchant_TransactionType']);
-        $this->assertEquals('001', $details['Ds_Merchant_ConsumerLanguage']);
-    }
-
 
     /**
      * @test

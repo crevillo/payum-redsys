@@ -16,7 +16,7 @@ The preferred way to install the library is using [composer](http://getcomposer.
 Run composer require to add dependencies to _composer.json_:
 
 ```bash
-php composer.phar require "crevillo/payum-redsys:*@dev"
+php composer.phar require crevillo/payum-redsys
 ```
 
 ## config.php
@@ -27,17 +27,20 @@ We have to only add the payment factory. All the rest remain the same:
 <?php
 //config.php
 
-use Crevillo\Payum\Redsys\Api as RedsysApi;
-use Crevillo\Payum\Redsys\PaymentFactory as RedsysPaymentFactory;
+use Payum\Core\Extension\GenericTokenFactoryExtension;
 
 // ...
 
-$payments['redsys'] = RedsysPaymentFactory::create(new RedsysApi(array(
+$redsysPaymentFactory = new \Crevillo\Payum\Redsys\PaymentFactory;
+$payments['redsys'] = $redsysPaymentFactory->create(array(
    'merchant_code' => 'REPLACE WITH YOURS',
    'terminal' => 'REPLACE WITH YOURS', // normally '001'
    'secret_key' => 'REPLACE WITH YOURS'
    'sandbox' => true
-)));
+   
+    // uncomment if you want notify url to be generated automatically.
+    // 'payum.extension.token_factory' => new GenericTokenFactoryExtension($tokenFactory),
+));
 ```
 
 ## prepare.php
