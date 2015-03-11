@@ -25,7 +25,7 @@ class RedsysPaymentFactory extends AbstractPaymentFactory
             ->scalarNode('merchant_code')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('terminal')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('secret_key')->isRequired()->cannotBeEmpty()->end()
-            ->scalarNode('sandbox')->isRequired()->cannotBeEmpty()->end()
+            ->booleanNode('sandbox')->defaultTrue()->end()
             ->end();
     }
 
