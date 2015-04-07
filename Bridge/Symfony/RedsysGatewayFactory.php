@@ -1,10 +1,10 @@
 <?php
 namespace Crevillo\Payum\Redsys\Bridge\Symfony;
 
-use Payum\Bundle\PayumBundle\DependencyInjection\Factory\Payment\AbstractPaymentFactory;
+use Payum\Bundle\PayumBundle\DependencyInjection\Factory\Gateway\AbstractGatewayFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
-class RedsysPaymentFactory extends AbstractPaymentFactory
+class RedsysGatewayFactory extends AbstractGatewayFactory
 {
     /**
      * {@inheritDoc}
@@ -32,9 +32,9 @@ class RedsysPaymentFactory extends AbstractPaymentFactory
     /**
      * {@inheritDoc}
      */
-    protected function getPayumPaymentFactoryClass()
+    protected function getPayumGatewayFactoryClass()
     {
-        return 'Crevillo\Payum\Redsys\PaymentFactory';
+        return 'Crevillo\Payum\Redsys\RedsysGatewayFactory';
     }
 
     /**

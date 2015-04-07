@@ -2,7 +2,7 @@
 namespace Crevillo\Payum\Redsys\Action;
 
 use Crevillo\Payum\Redsys\Api;
-use Payum\Core\Action\PaymentAwareAction;
+use Payum\Core\Action\GatewayAwareAction;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -11,7 +11,7 @@ use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Request\Notify;
 
-class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
+class NotifyAction extends GatewayAwareAction implements ApiAwareInterface
 {
     /**
      * @var Api
@@ -41,7 +41,7 @@ class NotifyAction extends PaymentAwareAction implements ApiAwareInterface
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
-        $this->payment->execute($httpRequest = new GetHttpRequest());
+        $this->gateway->execute($httpRequest = new GetHttpRequest());
         if (null === $httpRequest->request['Ds_Signature']) {
             throw new HttpResponse('The notification is invalid', 400);
         }

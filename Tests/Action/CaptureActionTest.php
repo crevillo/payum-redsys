@@ -74,8 +74,8 @@ class CaptureActionTest extends GenericActionTest
 
         $apiMock = $this->createApiMock();
 
-        $paymentMock = $this->createPaymentMock();
-        $paymentMock
+        $gatewayMock = $this->createGatewayMock();
+        $gatewayMock
             ->expects($this->never())
             ->method('execute')
             ->with($details)
@@ -102,8 +102,8 @@ class CaptureActionTest extends GenericActionTest
 
         $apiMock = $this->createApiMock();
 
-        $paymentMock = $this->createPaymentMock();
-        $paymentMock
+        $gatewayMock = $this->createGatewayMock();
+        $gatewayMock
             ->expects($this->never())
             ->method('execute')
             ->will($this->throwException(new LogicException()))
@@ -130,8 +130,8 @@ class CaptureActionTest extends GenericActionTest
 
         $apiMock = $this->createApiMock();
 
-        $paymentMock = $this->createPaymentMock();
-        $paymentMock
+        $gatewayMock = $this->createGatewayMock();
+        $gatewayMock
             ->expects($this->never())
             ->method('execute')
             ->will($this->throwException(new LogicException()))
@@ -159,8 +159,8 @@ class CaptureActionTest extends GenericActionTest
 
         $apiMock = $this->createApiMock();
 
-        $paymentMock = $this->createPaymentMock();
-        $paymentMock
+        $gatewayMock = $this->createGatewayMock();
+        $gatewayMock
             ->expects($this->never())
             ->method('execute')
             ->will($this->throwException(new LogicException()))
@@ -189,8 +189,8 @@ class CaptureActionTest extends GenericActionTest
 
         $apiMock = $this->createApiMock();
 
-        $paymentMock = $this->createPaymentMock();
-        $paymentMock
+        $gatewayMock = $this->createGatewayMock();
+        $gatewayMock
             ->expects($this->never())
             ->method('execute')
             ->will($this->throwException(new LogicException()))
@@ -219,8 +219,8 @@ class CaptureActionTest extends GenericActionTest
 
         $apiMock = $this->createApiMock();
 
-        $paymentMock = $this->createPaymentMock();
-        $paymentMock
+        $gatewayMock = $this->createGatewayMock();
+        $gatewayMock
             ->expects($this->never())
             ->method('execute')
             ->with($this->isInstanceOf('Payum\Core\Request\GetHttpRequest'))
@@ -241,10 +241,10 @@ class CaptureActionTest extends GenericActionTest
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|PaymentInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|GatewayInterface
      */
-    protected function createPaymentMock()
+    protected function createGatewayMock()
     {
-        return $this->getMock('Payum\Core\PaymentInterface');
+        return $this->getMock('Payum\Core\GatewayInterface');
     }
 }

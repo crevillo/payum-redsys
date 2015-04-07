@@ -228,7 +228,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider longOrderNumberProvider
      * @expectedException \Payum\Core\Exception\LogicException
-     * @expectedExceptionMessage Order number can't have more than 12 characters
+     * @expectedExceptionMessage Payment number can't have more than 12 characters
      */
     public function shouldThrowIfOrderNumberHasMoreThan12Characters($orderNumber)
     {

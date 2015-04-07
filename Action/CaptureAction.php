@@ -58,7 +58,7 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
 
         if (empty($details['Ds_Merchant_MerchantURL']) && $request->getToken() && $this->tokenFactory) {
             $notifyToken = $this->tokenFactory->createNotifyToken(
-                $request->getToken()->getPaymentName(),
+                $request->getToken()->getGatewayName(),
                 $request->getToken()->getDetails()
             );
 

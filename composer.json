@@ -1,7 +1,7 @@
 {
     "name": "crevillo/payum-redsys",
     "type": "library",
-    "description": "Redsys payment",
+    "description": "Redsys gateway",
     "keywords": [
         "payment",
         "payum",
