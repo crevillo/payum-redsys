@@ -31,8 +31,8 @@ use Payum\Core\Extension\GenericTokenFactoryExtension;
 
 // ...
 
-$redsysGatewayFactory = new \Crevillo\Payum\Redsys\GatewayFactory;
-$gateways['redsys'] = $redsysGatewayFactory->create(array(
+$factory = new \Crevillo\Payum\Redsys\RedsysGatewayFactory;
+$gateways['redsys'] = $factory->create(array(
    'merchant_code' => 'REPLACE WITH YOURS',
    'terminal' => 'REPLACE WITH YOURS', // normally '001'
    'secret_key' => 'REPLACE WITH YOURS'
