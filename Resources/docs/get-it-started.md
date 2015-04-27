@@ -1,9 +1,9 @@
 # Get it started.
 
 In this chapter we are going to talk about the most common task: purchase of a product using [redsys](http://www.redsys.es/).
-This payment is also known as sermepa and is widely used in Spain.
+This gateway is also known as sermepa and is widely used in Spain.
 
-Please note you can't test this payment if you don't have a merchant account with one of the banks using
+Please note you can't test this gateway if you don't have a merchant account with one of the banks using
 this payment gateway. They don't have a public sandbox and we feel sorry about that.
 
 We assume you already read [get it started](https://github.com/Payum/Payum/blob/master/src/Payum/Core/Resources/docs/get-it-started.md) from core.
@@ -21,7 +21,7 @@ php composer.phar require crevillo/payum-redsys
 
 ## config.php
 
-We have to only add the payment factory. All the rest remain the same:
+We have to only add the gateway factory. All the rest remain the same:
 
 ```php
 <?php
@@ -31,8 +31,8 @@ use Payum\Core\Extension\GenericTokenFactoryExtension;
 
 // ...
 
-$redsysPaymentFactory = new \Crevillo\Payum\Redsys\PaymentFactory;
-$payments['redsys'] = $redsysPaymentFactory->create(array(
+$factory = new \Crevillo\Payum\Redsys\RedsysGatewayFactory;
+$gateways['redsys'] = $factory->create(array(
    'merchant_code' => 'REPLACE WITH YOURS',
    'terminal' => 'REPLACE WITH YOURS', // normally '001'
    'secret_key' => 'REPLACE WITH YOURS'
@@ -45,13 +45,13 @@ $payments['redsys'] = $redsysPaymentFactory->create(array(
 
 ## prepare.php
 
-Here you have to modify a `paymentName` value. Set it to `redsys`.
+Here you have to modify a `gatewayName` value. Set it to `redsys`.
 
 ## Next 
 
 * [Core's Get it started](https://github.com/Payum/Core/blob/master/Resources/docs/get-it-started.md).
 * [The architecture](https://github.com/Payum/Core/blob/master/Resources/docs/the-architecture.md).
-* [Supported payments](https://github.com/Payum/Core/blob/master/Resources/docs/supported-payments.md).
+* [Supported gateways](https://github.com/Payum/Core/blob/master/Resources/docs/supported-gateways.md).
 * [Storages](https://github.com/Payum/Core/blob/master/Resources/docs/storages.md).
 * [Capture script](https://github.com/Payum/Core/blob/master/Resources/docs/capture-script.md).
 * [Notify script](https://github.com/Payum/Core/blob/master/Resources/docs/notify-script.md).

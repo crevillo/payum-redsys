@@ -1,18 +1,17 @@
 <?php
 namespace Crevillo\Payum\Redsys\Tests;
 
-use Crevillo\Payum\Redsys\Api;
-use Crevillo\Payum\Redsys\PaymentFactory;
+use Crevillo\Payum\Redsys\RedsysGatewayFactory;
 
-class PaymentFactoryTest extends \PHPUnit_Framework_TestCase
+class RedsysGatewayFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
-    public function shouldImplementPaymentFactoryInterface()
+    public function shouldImplementGatewayFactoryInterface()
     {
-        $rc = new \ReflectionClass('Crevillo\Payum\Redsys\PaymentFactory');
-        $this->assertTrue($rc->implementsInterface('Payum\Core\PaymentFactoryInterface'));
+        $rc = new \ReflectionClass('Crevillo\Payum\Redsys\RedsysGatewayFactory');
+        $this->assertTrue($rc->implementsInterface('Payum\Core\GatewayFactoryInterface'));
     }
 
     /**
@@ -20,64 +19,64 @@ class PaymentFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function couldBeConstructedWithoutAnyArguments()
     {
-        new PaymentFactory();
+        new RedsysGatewayFactory();
     }
     /**
      * @test
      */
-    public function shouldCreateCorePaymentFactoryIfNotPassed()
+    public function shouldCreateCoreGatewayFactoryIfNotPassed()
     {
-        $factory = new PaymentFactory();
-        $this->assertAttributeInstanceOf('Payum\Core\PaymentFactory', 'corePaymentFactory', $factory);
+        $factory = new RedsysGatewayFactory();
+        $this->assertAttributeInstanceOf('Payum\Core\GatewayFactory', 'coreGatewayFactory', $factory);
     }
 
     /**
      * @test
      */
-    public function shouldUseCorePaymentFactoryPassedAsSecondArgument()
+    public function shouldUseCoreGatewayFactoryPassedAsSecondArgument()
     {
-        $corePaymentFactory = $this->getMock('Payum\Core\PaymentFactoryInterface');
-        $factory = new PaymentFactory(array(), $corePaymentFactory);
-        $this->assertAttributeSame($corePaymentFactory, 'corePaymentFactory', $factory);
+        $coreGatewayFactory = $this->getMock('Payum\Core\GatewayFactoryInterface');
+        $factory = new RedsysGatewayFactory(array(), $coreGatewayFactory);
+        $this->assertAttributeSame($coreGatewayFactory, 'coreGatewayFactory', $factory);
     }
     /**
      * @test
      */
-    public function shouldAllowCreatePayment()
+    public function shouldAllowCreateGateway()
     {
-        $factory = new PaymentFactory();
-        $payment = $factory->create(array(
+        $factory = new RedsysGatewayFactory();
+        $gateway = $factory->create(array(
             'merchant_code' => 'a_merchant_code',
             'terminal' => 'a_terminal',
             'secret_key' => 'a_secret_key'
         ));
-        $this->assertInstanceOf('Payum\Core\Payment', $payment);
-        $this->assertAttributeNotEmpty('apis', $payment);
-        $this->assertAttributeNotEmpty('actions', $payment);
-        $extensions = $this->readAttribute($payment, 'extensions');
+        $this->assertInstanceOf('Payum\Core\Gateway', $gateway);
+        $this->assertAttributeNotEmpty('apis', $gateway);
+        $this->assertAttributeNotEmpty('actions', $gateway);
+        $extensions = $this->readAttribute($gateway, 'extensions');
         $this->assertAttributeNotEmpty('extensions', $extensions);
     }
 
     /**
      * @test
      */
-    public function shouldAllowCreatePaymentWithCustomApi()
+    public function shouldAllowCreateGatewayWithCustomApi()
     {
-        $factory = new PaymentFactory();
-        $payment = $factory->create(array('payum.api' => new \stdClass()));
-        $this->assertInstanceOf('Payum\Core\Payment', $payment);
-        $this->assertAttributeNotEmpty('apis', $payment);
-        $this->assertAttributeNotEmpty('actions', $payment);
-        $extensions = $this->readAttribute($payment, 'extensions');
+        $factory = new RedsysGatewayFactory();
+        $gateway = $factory->create(array('payum.api' => new \stdClass()));
+        $this->assertInstanceOf('Payum\Core\Gateway', $gateway);
+        $this->assertAttributeNotEmpty('apis', $gateway);
+        $this->assertAttributeNotEmpty('actions', $gateway);
+        $extensions = $this->readAttribute($gateway, 'extensions');
         $this->assertAttributeNotEmpty('extensions', $extensions);
     }
 
     /**
      * @test
      */
-    public function shouldAllowCreatePaymentConfig()
+    public function shouldAllowCreateGatewayConfig()
     {
-        $factory = new PaymentFactory();
+        $factory = new RedsysGatewayFactory();
         $config = $factory->createConfig();
         $this->assertInternalType('array', $config);
         $this->assertNotEmpty($config);
@@ -86,9 +85,9 @@ class PaymentFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldAddDefaultConfigPassedInConstructorWhileCreatingPaymentConfig()
+    public function shouldAddDefaultConfigPassedInConstructorWhileCreatingGatewayConfig()
     {
-        $factory = new PaymentFactory(array(
+        $factory = new RedsysGatewayFactory(array(
             'foo' => 'fooVal',
             'bar' => 'barVal',
         ));
@@ -105,7 +104,7 @@ class PaymentFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldConfigContainDefaultOptions()
     {
-        $factory = new PaymentFactory();
+        $factory = new RedsysGatewayFactory();
         $config = $factory->createConfig();
         $this->assertInternalType('array', $config);
         $this->assertArrayHasKey('payum.default_options', $config);
@@ -120,7 +119,7 @@ class PaymentFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldConfigContainFactoryNameAndTitle()
     {
-        $factory = new PaymentFactory();
+        $factory = new RedsysGatewayFactory();
         $config = $factory->createConfig();
         $this->assertInternalType('array', $config);
         $this->assertArrayHasKey('payum.factory_name', $config);
@@ -137,7 +136,7 @@ class PaymentFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowIfRequiredOptionsNotPassed()
     {
-        $factory = new PaymentFactory();
+        $factory = new RedsysGatewayFactory();
         $factory->create();
     }
 }

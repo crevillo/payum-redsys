@@ -2,7 +2,6 @@
 namespace Crevillo\Payum\Redsys;
 
 use Buzz\Client\ClientInterface;
-use Buzz\Client\Curl;
 use Payum\Core\Bridge\Buzz\ClientFactory;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
@@ -89,7 +88,7 @@ class Api
     public function getISO4127( $currency )
     {
         if (!isset($this->currencies[$currency])) {
-            throw new LogicException( 'Currency not allowed by the payment gateway.');
+            throw new LogicException( 'Currency not allowed by the gateway.');
         }
 
         return $this->currencies[$currency];
@@ -132,7 +131,7 @@ class Api
     public function ensureCorrectOrderNumber($orderNumber)
     {
         if (strlen($orderNumber) > self::ORDER_NUMBER_MAXIMUM_LENGHT ) {
-            throw new LogicException('Order number can\'t have more than 12 characters');
+            throw new LogicException('Payment number can\'t have more than 12 characters');
         }
 
         // add 0 to the left in case length of the order number is less than 4

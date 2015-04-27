@@ -157,7 +157,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @expectedException \Payum\Core\Exception\LogicException
-     * @expectedExceptionMessage Currency not allowed by the payment gateway.
+     * @expectedExceptionMessage Currency not allowed by the gateway.
      */
     public function throwIsCurrencyIsNotSupported()
     {
@@ -228,7 +228,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider longOrderNumberProvider
      * @expectedException \Payum\Core\Exception\LogicException
-     * @expectedExceptionMessage Order number can't have more than 12 characters
+     * @expectedExceptionMessage Payment number can't have more than 12 characters
      */
     public function shouldThrowIfOrderNumberHasMoreThan12Characters($orderNumber)
     {

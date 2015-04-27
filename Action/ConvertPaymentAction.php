@@ -5,11 +5,12 @@ use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
-use Payum\Core\Request\FillOrderDetails;
+use Payum\Core\Model\PaymentInterface;
+use Payum\Core\Request\Convert;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Crevillo\Payum\Redsys\Api;
 
-class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
+class ConvertPaymentAction implements ActionInterface, ApiAwareInterface
 {
     /**
      * @var Api
@@ -31,27 +32,28 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
     /**
      * {@inheritDoc}
      *
-     * @param FillOrderDetails $request
+     * @param Convert $request
      */
     public function execute($request)
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
-        $order = $request->getOrder();
-        $details = ArrayObject::ensureArrayObject($order->getDetails());
+        /** @var PaymentInterface $payment */
+        $payment = $request->getSource();
+        $details = ArrayObject::ensureArrayObject($payment->getDetails());
 
         $details->defaults(array(
             'Ds_Merchant_TransactionType' => Api::TRANSACTIONTYPE_AUTHORIZATION,
             'Ds_Merchant_ConsumerLanguage' => Api::CONSUMERLANGUAGE_SPANISH,
         ));
 
-        $details['Ds_Merchant_Amount'] = $order->getTotalAmount();
-        $details['Ds_Merchant_Currency'] = $this->api->getISO4127($order->getCurrencyCode());
-        $details['Ds_Merchant_Order'] = $this->api->ensureCorrectOrderNumber($order->getNumber());
+        $details['Ds_Merchant_Amount'] = $payment->getTotalAmount();
+        $details['Ds_Merchant_Currency'] = $this->api->getISO4127($payment->getCurrencyCode());
+        $details['Ds_Merchant_Order'] = $this->api->ensureCorrectOrderNumber($payment->getNumber());
         $details['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
         $details['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
 
-        $order->setDetails($details);
+        $request->setResult((array) $details);
     }
 
     /**
@@ -59,6 +61,10 @@ class FillOrderDetailsAction implements ActionInterface, ApiAwareInterface
      */
     public function supports($request)
     {
-        return $request instanceof FillOrderDetails;
+        return
+            $request instanceof Convert &&
+            'array' == $request->getTo() &&
+            $request->getSource() instanceof PaymentInterface
+        ;
     }
 }

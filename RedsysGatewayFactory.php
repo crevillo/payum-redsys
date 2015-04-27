@@ -3,18 +3,18 @@ namespace Crevillo\Payum\Redsys;
 
 use Crevillo\Payum\Redsys\Action\NotifyAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
-use Payum\Core\PaymentFactory as CorePaymentFactory;
+use Payum\Core\GatewayFactory as CoreGatewayFactory;
 use Crevillo\Payum\Redsys\Action\CaptureAction;
-use Crevillo\Payum\Redsys\Action\FillOrderDetailsAction;
+use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
 use Crevillo\Payum\Redsys\Action\StatusAction;
-use Payum\Core\PaymentFactoryInterface;
+use Payum\Core\GatewayFactoryInterface;
 
-class PaymentFactory implements PaymentFactoryInterface
+class RedsysGatewayFactory implements GatewayFactoryInterface
 {
     /**
-     * @var PaymentFactoryInterface
+     * @var GatewayFactoryInterface
      */
-    protected $corePaymentFactory;
+    protected $coreGatewayFactory;
 
     /**
      * @var array
@@ -23,11 +23,11 @@ class PaymentFactory implements PaymentFactoryInterface
 
     /**
      * @param array $defaultConfig
-     * @param PaymentFactoryInterface $corePaymentFactory
+     * @param GatewayFactoryInterface $coreGatewayFactory
      */
-    public function __construct(array $defaultConfig = array(), PaymentFactoryInterface $corePaymentFactory = null)
+    public function __construct(array $defaultConfig = array(), GatewayFactoryInterface $coreGatewayFactory = null)
     {
-        $this->corePaymentFactory = $corePaymentFactory ?: new CorePaymentFactory();
+        $this->coreGatewayFactory = $coreGatewayFactory ?: new CoreGatewayFactory();
         $this->defaultConfig = $defaultConfig;
     }
 
@@ -36,7 +36,7 @@ class PaymentFactory implements PaymentFactoryInterface
      */
     public function create(array $config = array())
     {
-        return $this->corePaymentFactory->create($this->createConfig($config));
+        return $this->coreGatewayFactory->create($this->createConfig($config));
     }
 
     /**
@@ -46,7 +46,7 @@ class PaymentFactory implements PaymentFactoryInterface
     {
         $config = ArrayObject::ensureArrayObject($config);
         $config->defaults($this->defaultConfig);
-        $config->defaults($this->corePaymentFactory->createConfig());
+        $config->defaults($this->coreGatewayFactory->createConfig());
 
         $config->defaults(array(
             'payum.factory_name' => 'redsys',
@@ -54,7 +54,7 @@ class PaymentFactory implements PaymentFactoryInterface
 
             'payum.action.capture' => new CaptureAction(),
             'payum.action.notify' => new NotifyAction(),
-            'payum.action.fill_order_details' => new FillOrderDetailsAction(),
+            'payum.action.convert_payment' => new ConvertPaymentAction(),
             'payum.action.status' => new StatusAction(),
         ));
 
