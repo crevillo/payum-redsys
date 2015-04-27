@@ -5,7 +5,7 @@ use Crevillo\Payum\Redsys\Action\NotifyAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory as CoreGatewayFactory;
 use Crevillo\Payum\Redsys\Action\CaptureAction;
-use Crevillo\Payum\Redsys\Action\FillOrderDetailsAction;
+use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
 use Crevillo\Payum\Redsys\Action\StatusAction;
 use Payum\Core\GatewayFactoryInterface;
 
@@ -54,7 +54,7 @@ class RedsysGatewayFactory implements GatewayFactoryInterface
 
             'payum.action.capture' => new CaptureAction(),
             'payum.action.notify' => new NotifyAction(),
-            'payum.action.fill_order_details' => new FillOrderDetailsAction(),
+            'payum.action.convert_payment' => new ConvertPaymentAction(),
             'payum.action.status' => new StatusAction(),
         ));
 

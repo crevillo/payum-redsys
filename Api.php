@@ -2,7 +2,6 @@
 namespace Crevillo\Payum\Redsys;
 
 use Buzz\Client\ClientInterface;
-use Buzz\Client\Curl;
 use Payum\Core\Bridge\Buzz\ClientFactory;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;

@@ -2,23 +2,23 @@
 
 namespace Crevillo\Payum\Redsys\Tests\Action;
 
-use Crevillo\Payum\Redsys\Action\FillOrderDetailsAction;
+use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
 use Payum\Core\Model\Payment;
-use Payum\Core\Request\FillOrderDetails;
+use Payum\Core\Request\Convert;
 use Payum\Core\Tests\GenericActionTest;
 
-class FillOrderDetailsActionTest extends GenericActionTest
+class ConvertPaymentActionTest extends GenericActionTest
 {
-    protected $actionClass = 'Crevillo\Payum\Redsys\Action\FillOrderDetailsAction';
+    protected $actionClass = 'Crevillo\Payum\Redsys\Action\ConvertPaymentAction';
 
-    protected $requestClass = 'Payum\Core\Request\FillOrderDetails';
+    protected $requestClass = 'Payum\Core\Request\Convert';
 
     public function provideSupportedRequests()
     {
         return array(
-            array(new $this->requestClass(new Payment())),
-            array(new $this->requestClass($this->getMock('Payum\Core\Model\PaymentInterface'))),
-            array(new $this->requestClass(new Payment(), $this->getMock('Payum\Core\Security\TokenInterface'))),
+            array(new $this->requestClass(new Payment(), 'array')),
+            array(new $this->requestClass($this->getMock('Payum\Core\Model\PaymentInterface'), 'array')),
+            array(new $this->requestClass(new Payment(), 'array', $this->getMock('Payum\Core\Security\TokenInterface'))),
         );
     }
 
@@ -29,6 +29,7 @@ class FillOrderDetailsActionTest extends GenericActionTest
             array(array('foo')),
             array(new \stdClass()),
             array($this->getMockForAbstractClass('Payum\Core\Request\Generic', array(array()))),
+            array(new $this->requestClass(new Payment(), 'notArray')),
         );
     }
 
@@ -37,7 +38,7 @@ class FillOrderDetailsActionTest extends GenericActionTest
      */
     public function shouldImplementActionInterface()
     {
-        $rc = new \ReflectionClass('Crevillo\Payum\Redsys\Action\FillOrderDetailsAction');
+        $rc = new \ReflectionClass('Crevillo\Payum\Redsys\Action\ConvertPaymentAction');
 
         $this->assertTrue($rc->implementsInterface('Payum\Core\Action\ActionInterface'));
     }
@@ -49,7 +50,7 @@ class FillOrderDetailsActionTest extends GenericActionTest
     {
         $expectedApi = $this->createApiMock();
 
-        $action = new FillOrderDetailsAction();
+        $action = new ConvertPaymentAction();
         $action->setApi($expectedApi);
 
         $this->assertAttributeSame($expectedApi, 'api', $action);
@@ -100,10 +101,11 @@ class FillOrderDetailsActionTest extends GenericActionTest
 
         $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
 
-        $action = new FillOrderDetailsAction();
+        $action = new ConvertPaymentAction();
         $action->setApi($apiMock);
-        $action->execute(new FillOrderDetails($payment, $tokenMock ));
-        $details = $payment->getDetails();
+        $action->execute($convert = new Convert($payment, 'array', $tokenMock));
+
+        $details = $convert->getResult();
 
         $this->assertNotEmpty($details);
 
@@ -173,9 +175,9 @@ class FillOrderDetailsActionTest extends GenericActionTest
 
         $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
 
-        $action = new FillOrderDetailsAction();
+        $action = new ConvertPaymentAction();
         $action->setApi($apiMock);
-        $action->execute(new FillOrderDetails($payment, $tokenMock ));
+        $action->execute(new Convert($payment, 'array', $tokenMock));
         $details = $payment->getDetails();
 
         $this->assertNotEmpty($details);
@@ -197,7 +199,7 @@ class FillOrderDetailsActionTest extends GenericActionTest
      */
     public function throwIfUnsupportedApiGiven()
     {
-        $action = new FillOrderDetailsAction();
+        $action = new ConvertPaymentAction();
 
         $action->setApi(new \stdClass);
     }
