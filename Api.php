@@ -15,6 +15,8 @@ class Api
 
     const DS_RESPONSE_CANCELED = '0184';
 
+    const DS_RESPONSE_USER_CANCELED = '9915';
+
     const ORDER_NUMBER_MINIMUM_LENGTH = 4;
 
     const ORDER_NUMBER_MAXIMUM_LENGHT = 12;
