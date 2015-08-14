@@ -1,8 +1,6 @@
 <?php
 namespace Crevillo\Payum\Redsys;
 
-use Buzz\Client\ClientInterface;
-use Payum\Core\Bridge\Buzz\ClientFactory;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
 use Payum\Core\Exception\LogicException;
@@ -51,10 +49,8 @@ class Api
         'TRL' => '949'
     );
 
-    public function __construct(array $options, ClientInterface $client = null)
+    public function __construct(array $options)
     {
-        $this->client = $client ?: ClientFactory::createCurl();
-
         $this->options = array_replace( $this->options, $options );
 
         if (true == empty( $this->options['merchant_code'] )) {

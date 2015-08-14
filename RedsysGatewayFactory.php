@@ -79,7 +79,7 @@ class RedsysGatewayFactory implements GatewayFactoryInterface
                     'sandbox' => $config['sandbox'],
                 );
 
-                return new Api($redsysConfig, $config['buzz.client']);
+                return new Api($redsysConfig);
             };
         }
 
