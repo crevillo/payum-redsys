@@ -133,7 +133,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $api = new Api($options);
 
-        $this->assertEquals('https://sis-t.sermepa.es:25443/sis/realizarPago', $api->getRedsysUrl());
+        $this->assertEquals('https://sis-t.redsys.es:25443/sis/realizarPago', $api->getRedsysUrl());
     }
 
     /**
@@ -150,7 +150,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $api = new Api($options);
 
-        $this->assertEquals('https://sis.sermepa.es/sis/realizarPago', $api->getRedsysUrl() );
+        $this->assertEquals('https://sis.redsys.es/sis/realizarPago', $api->getRedsysUrl() );
     }
 
     /**
