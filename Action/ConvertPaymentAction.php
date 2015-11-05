@@ -23,7 +23,7 @@ class ConvertPaymentAction implements ActionInterface, ApiAwareInterface
     public function setApi($api)
     {
         if (false == $api instanceof Api) {
-            throw new UnsupportedApiException( 'Not supported.' );
+            throw new UnsupportedApiException('Not supported.');
         }
 
         $this->api = $api;
@@ -40,20 +40,19 @@ class ConvertPaymentAction implements ActionInterface, ApiAwareInterface
 
         /** @var PaymentInterface $payment */
         $payment = $request->getSource();
+
         $details = ArrayObject::ensureArrayObject($payment->getDetails());
 
         $details->defaults(array(
+            'Ds_Merchant_Amount' => $payment->getTotalAmount(),
+            'Ds_Merchant_Order' => $this->api->ensureCorrectOrderNumber($payment->getNumber()),
+            'Ds_Merchant_MerchantCode' => $this->api->getMerchantCode(),
+            'Ds_Merchant_Currency' => $this->api->getISO4127($payment->getCurrencyCode()),
             'Ds_Merchant_TransactionType' => Api::TRANSACTIONTYPE_AUTHORIZATION,
-            'Ds_Merchant_ConsumerLanguage' => Api::CONSUMERLANGUAGE_SPANISH,
+            'Ds_Merchant_Terminal' => $this->api->getMerchantTerminalCode(),
         ));
 
-        $details['Ds_Merchant_Amount'] = $payment->getTotalAmount();
-        $details['Ds_Merchant_Currency'] = $this->api->getISO4127($payment->getCurrencyCode());
-        $details['Ds_Merchant_Order'] = $this->api->ensureCorrectOrderNumber($payment->getNumber());
-        $details['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
-        $details['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
-
-        $request->setResult((array) $details);
+        $request->setResult((array)$details);
     }
 
     /**
@@ -64,7 +63,6 @@ class ConvertPaymentAction implements ActionInterface, ApiAwareInterface
         return
             $request instanceof Convert &&
             'array' == $request->getTo() &&
-            $request->getSource() instanceof PaymentInterface
-        ;
+            $request->getSource() instanceof PaymentInterface;
     }
 }

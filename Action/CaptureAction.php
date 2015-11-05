@@ -29,8 +29,9 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
      *
      * @return void
      */
-    public function setGenericTokenFactory(GenericTokenFactoryInterface $genericTokenFactory = null)
-    {
+    public function setGenericTokenFactory(
+        GenericTokenFactoryInterface $genericTokenFactory = null
+    ) {
         $this->tokenFactory = $genericTokenFactory;
     }
 
@@ -54,18 +55,18 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
         /** @var $request Capture */
         RequestNotSupportedException::assertSupports($this, $request);
 
-        $details = ArrayObject::ensureArrayObject($request->getModel());
+        $postData = ArrayObject::ensureArrayObject($request->getModel());
 
-        if (empty($details['Ds_Merchant_MerchantURL']) && $request->getToken() && $this->tokenFactory) {
+        if (empty($postData['Ds_Merchant_MerchantURL']) && $request->getToken() && $this->tokenFactory) {
             $notifyToken = $this->tokenFactory->createNotifyToken(
                 $request->getToken()->getGatewayName(),
                 $request->getToken()->getDetails()
             );
 
-            $details['Ds_Merchant_MerchantURL'] = $notifyToken->getTargetUrl();
+            $postData['Ds_Merchant_MerchantURL'] = $notifyToken->getTargetUrl();
         }
 
-        $details->validatedKeysSet(array(
+        $postData->validatedKeysSet(array(
             'Ds_Merchant_Amount',
             'Ds_Merchant_Order',
             'Ds_Merchant_Currency',
@@ -76,18 +77,25 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
         $details['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
         $details['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
 
-        if (false == $details['Ds_Merchant_UrlOK'] && $request->getToken()) {
-            $details['Ds_Merchant_UrlOK'] = $request->getToken()->getTargetUrl();
+        if (false == $postData['Ds_Merchant_UrlOK'] && $request->getToken()) {
+            $postData['Ds_Merchant_UrlOK'] = $request->getToken()
+                ->getTargetUrl();
+        }
+        if (false == $postData['Ds_Merchant_UrlKO'] && $request->getToken()) {
+            $postData['Ds_Merchant_UrlKO'] = $request->getToken()
+                ->getTargetUrl();
         }
 
-        if (false == $details['Ds_Merchant_UrlKO'] && $request->getToken()) {
-            $details['Ds_Merchant_UrlKO'] = $request->getToken()->getTargetUrl();
+        $details['Ds_SignatureVersion'] = Api::SIGNATURE_VERSION;
+
+        if (false == $postData['Ds_MerchantParameters'] && $request->getToken()) {
+            $details['Ds_MerchantParameters'] = $this->api->createMerchantParameters($postData->toUnsafeArray());
         }
 
-        if (false == $details['Ds_Merchant_MerchantSignature']) {
-            $details['Ds_Merchant_MerchantSignature'] = $this->api->sign($details->toUnsafeArray());
+        if (false == $postData['Ds_Signature']) {
+            $details['Ds_Signature'] = $this->api->sign($postData->toUnsafeArray());
 
-            throw new HttpPostRedirect($this->api->getRedsysUrl(), $details->toUnsafeArray());
+            throw new HttpPostRedirect($this->api->getRedsysUrl(), $details);
         }
     }
 
@@ -98,7 +106,6 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
     {
         return
             $request instanceof Capture &&
-            $request->getModel() instanceof \ArrayAccess
-        ;
+            $request->getModel() instanceof \ArrayAccess;
     }
 }

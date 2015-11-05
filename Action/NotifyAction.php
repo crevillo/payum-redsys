@@ -42,14 +42,30 @@ class NotifyAction extends GatewayAwareAction implements ApiAwareInterface
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
         $this->gateway->execute($httpRequest = new GetHttpRequest());
+
         if (null === $httpRequest->request['Ds_Signature']) {
             throw new HttpResponse('The notification is invalid', 400);
         }
+
+        if (null === $httpRequest->request['Ds_MerchantParameters']) {
+            throw new HttpResponse('The notification is invalid', 400);
+        }
+
         if (false == $this->api->validateNotificationSignature($httpRequest->request)) {
             throw new HttpResponse('The notification is invalid', 400);
         }
 
-        $details->replace($httpRequest->request);
+        // After migrating to sha256, DS_Response param is not present in the
+        // post request sent by the bank. Instead, bank sends an encoded string
+        //  our gateway needs to decode.
+        // Once this is decoded we need to add this info to the details among
+        // with the $httpRequest->request part
+        $details->replace(
+            ArrayObject::ensureArrayObject(
+                json_decode(base64_decode(strtr($httpRequest->request['Ds_MerchantParameters'], '-_', '+/')))
+            )->toUnsafeArray() +
+            $httpRequest->request
+        );
 
         throw new HttpResponse('', 200);
     }
