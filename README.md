@@ -3,14 +3,14 @@ payum-redsys
 
 [![Build Status](https://travis-ci.org/crevillo/payum-redsys.png?branch=master)](https://travis-ci.org/crevillo/payum-redsys)
 
-Provide integration of redsys/sermepa gateways to [Payum](http://www.payum.org).
+Provide integration of redsys/sermepa gateways to [Payum](https://github.com/Payum/Payum).
 
 ## Resources
 
 * [Questions](https://github.com/crevillo/payum-redsys/issues)
 * [Issue Tracker](https://github.com/crevillo/payum-redsys/issues)
 * [Twitter](https://twitter.com/crevillo)
-* [Payum Documentation](http://payum.org/doc#Payum)
+* [Payum Documentation](https://github.com/Payum/Payum/blob/master/src/Payum/Core/Resources/docs/index.md)
 
 ## Contributing
 
