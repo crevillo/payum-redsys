@@ -162,14 +162,22 @@ class Api
      */
     private function encrypt_3DES($merchantOrder, $key)
     {
-        // default IV
-        $bytes = array(0, 0, 0, 0, 0, 0, 0, 0);
-        $iv = implode(array_map("chr", $bytes));
 
-        // sign
-        $ciphertext = mcrypt_encrypt(MCRYPT_3DES, $key, $merchantOrder,
-            MCRYPT_MODE_CBC, $iv);
+        $ciphertext = null;
+        if ( function_exists( 'mcrypt_encrypt' ) && version_compare(phpversion(), '7.1', '<')  ) {
+            // default IV
+            $bytes = array(0,0,0,0,0,0,0,0); //byte [] IV = {0, 0, 0, 0, 0, 0, 0, 0}
+            $iv = implode(array_map("chr", $bytes));
+            $ciphertext = mcrypt_encrypt(MCRYPT_3DES, $key, $merchantOrder, MCRYPT_MODE_CBC, $iv);
 
+        } elseif(function_exists( 'openssl_encrypt' ) && version_compare(phpversion(), '7.1', '>=') ) {
+            $l = ceil(strlen($merchantOrder) / 8) * 8;
+            $ciphertext = substr(openssl_encrypt($merchantOrder . str_repeat("\0", $l - strlen($merchantOrder)), 'des-ede3-cbc', $key, OPENSSL_RAW_DATA, "\0\0\0\0\0\0\0\0"), 0, $l);
+        }elseif( !function_exists( 'openssl_encrypt' ) && version_compare( phpversion(), '7.1', '>=') ){
+            throw new Exception( __( 'php_openssl extension is not available in this server', 'wc_redsys_payment_gateway' ) );
+        }elseif (!function_exists( 'mcrypt_encrypt' ) && version_compare( phpversion(), '7.1', '<')) {
+            throw new Exception( __( 'Mcrypt extension is not available in this server', 'wc_redsys_payment_gateway' ) );
+        }
         return $ciphertext;
     }
 
