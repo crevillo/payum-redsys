@@ -50,6 +50,8 @@ class ConvertPaymentAction implements ActionInterface, ApiAwareInterface
             'Ds_Merchant_Currency' => $this->api->getISO4127($payment->getCurrencyCode()),
             'Ds_Merchant_TransactionType' => Api::TRANSACTIONTYPE_AUTHORIZATION,
             'Ds_Merchant_Terminal' => $this->api->getMerchantTerminalCode(),
+            'Ds_Merchant_UrlOK' => $this->api->getMerchantUrlOk(),
+            'Ds_Merchant_UrlKO' => $this->api->getMerchantUrlKo(),
         ));
 
         $request->setResult((array)$details);

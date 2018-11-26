@@ -99,6 +99,18 @@ class ConvertPaymentActionTest extends GenericActionTest
             ->willReturn('001')
         ;
 
+        $apiMock
+            ->expects($this->once())
+            ->method('getMerchantUrlOk')
+            ->willReturn('http://fake.local')
+        ;
+
+        $apiMock
+            ->expects($this->once())
+            ->method('getMerchantUrlOk')
+            ->willReturn('http://fake.local')
+        ;
+
         $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
 
         $action = new ConvertPaymentAction();
@@ -171,6 +183,18 @@ class ConvertPaymentActionTest extends GenericActionTest
             ->expects($this->once())
             ->method('getMerchantTerminalCode')
             ->willReturn('001')
+        ;
+
+        $apiMock
+            ->expects($this->once())
+            ->method('getMerchantUrlOk')
+            ->willReturn('http://fake.local')
+        ;
+
+        $apiMock
+            ->expects($this->once())
+            ->method('getMerchantUrlOk')
+            ->willReturn('http://fake.local')
         ;
 
         $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
