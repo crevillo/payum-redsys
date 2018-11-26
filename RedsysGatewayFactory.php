@@ -77,6 +77,8 @@ class RedsysGatewayFactory implements GatewayFactoryInterface
                     'terminal' => $config['terminal'],
                     'secret_key' => $config['secret_key'],
                     'sandbox' => $config['sandbox'],
+                    'merchant_url_ok' => $config['merchant_url_ok'],
+                    'merchant_url_ko' => $config['merchant_url_ko'],
                 );
 
                 return new Api($redsysConfig);

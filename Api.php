@@ -26,6 +26,8 @@ class Api
         'terminal' => null,
         'secret_key' => null,
         'sandbox' => true,
+        'merchant_url_ok' => null,
+        'merchant_url_ko' => null,
     );
 
     /**
@@ -115,6 +117,22 @@ class Api
     public function getMerchantTerminalCode()
     {
         return $this->options['terminal'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantUrlOk()
+    {
+        return $this->options['merchant_url_ok'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantUrlKo()
+    {
+        return $this->options['merchant_url_ko'];
     }
 
     /**

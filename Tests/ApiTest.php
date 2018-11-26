@@ -16,6 +16,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             'terminal' => 'a_terminal',
             'secret_key' => 'a_secret_key',
             'sandbox' => true,
+            'merchant_url_ok' => null,
+            'merchant_url_ko' => null
         );
 
         $api = new Api($options);
