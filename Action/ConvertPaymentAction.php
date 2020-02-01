@@ -3,6 +3,7 @@ namespace Crevillo\Payum\Redsys\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
+use Payum\Core\ApiAwareTrait;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Model\PaymentInterface;
@@ -12,21 +13,11 @@ use Crevillo\Payum\Redsys\Api;
 
 class ConvertPaymentAction implements ActionInterface, ApiAwareInterface
 {
-    /**
-     * @var Api
-     */
-    protected $api;
+    use ApiAwareTrait;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setApi($api)
+    public function __construct()
     {
-        if (false == $api instanceof Api) {
-            throw new UnsupportedApiException('Not supported.');
-        }
-
-        $this->api = $api;
+        $this->apiClass = Api::class;
     }
 
     /**

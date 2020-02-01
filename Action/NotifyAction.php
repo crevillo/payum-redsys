@@ -5,6 +5,7 @@ use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Action\GatewayAwareAction;
 use Payum\Core\ApiAwareInterface;
+use Payum\Core\ApiAwareTrait;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
@@ -17,22 +18,11 @@ use Payum\Core\Request\Notify;
 class NotifyAction implements ApiAwareInterface, ActionInterface, GatewayAwareInterface
 {
     use GatewayAwareTrait;
+    use ApiAwareTrait;
 
-    /**
-     * @var Api
-     */
-    protected $api;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setApi($api)
+    public function __construct()
     {
-        if (false === $api instanceof Api) {
-            throw new UnsupportedApiException('Not supported.');
-        }
-
-        $this->api = $api;
+        $this->apiClass = Api::class;
     }
 
     /**

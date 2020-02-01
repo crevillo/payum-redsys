@@ -3,6 +3,7 @@ namespace Crevillo\Payum\Redsys\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
+use Payum\Core\ApiAwareTrait;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
@@ -10,41 +11,17 @@ use Payum\Core\Reply\HttpPostRedirect;
 use Payum\Core\Request\Capture;
 use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Security\GenericTokenFactoryAwareInterface;
+use Payum\Core\Security\GenericTokenFactoryAwareTrait;
 use Payum\Core\Security\GenericTokenFactoryInterface;
 
 class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
-    /**
-     * @var Api
-     */
-    protected $api;
+    use ApiAwareTrait;
+    use GenericTokenFactoryAwareTrait;
 
-    /**
-     * @var GenericTokenFactoryInterface
-     */
-    protected $tokenFactory;
-
-    /**
-     * @param GenericTokenFactoryInterface $genericTokenFactory
-     *
-     * @return void
-     */
-    public function setGenericTokenFactory(
-        GenericTokenFactoryInterface $genericTokenFactory = null
-    ) {
-        $this->tokenFactory = $genericTokenFactory;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setApi($api)
+    public function __construct()
     {
-        if (false === $api instanceof Api) {
-            throw new UnsupportedApiException('Not supported.');
-        }
-
-        $this->api = $api;
+        $this->apiClass = Api::class;
     }
 
     /**
