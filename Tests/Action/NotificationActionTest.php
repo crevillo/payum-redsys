@@ -69,9 +69,40 @@ class NotificationActionTest extends TestCase
             'secret_key' => 'a_secret'
         ]);
 
-        $model = array(
-            'Ds_Signature' => null,
-        );
+        $model = array();
+
+        $gatewayMock = $this->createMock(GatewayInterface::class);
+        $gatewayMock->expects($this->once())
+            ->method('execute')
+            ->with(new GetHttpRequest())
+            ->will($this->returnCallback(function (GetHttpRequest $request) {
+                $request->request = [];
+            }))
+        ;
+
+        $notifyAction = new NotifyAction();
+        $notifyAction->setApi($api);
+        $notifyAction->setGateway($gatewayMock);
+
+        $request = new Notify($model);
+
+        $notifyAction->execute($request);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \Payum\Core\Reply\HttpResponse
+     */
+    public function willThrowIfDsSignatureIsNull()
+    {
+        $api = new Api([
+            'merchant_code' => 'a',
+            'terminal' => '1',
+            'secret_key' => 'a_secret'
+        ]);
+
+        $model = array();
 
         $gatewayMock = $this->createMock(GatewayInterface::class);
         $gatewayMock->expects($this->once())
@@ -91,4 +122,109 @@ class NotificationActionTest extends TestCase
         $notifyAction->execute($request);
     }
 
+    /**
+     * @test
+     *
+     * @expectedException \Payum\Core\Reply\HttpResponse
+     */
+    public function willThrowIfDsMerchantParametersIsNull()
+    {
+        $api = new Api([
+            'merchant_code' => 'a',
+            'terminal' => '1',
+            'secret_key' => 'a_secret'
+        ]);
+
+        $model = array();
+
+        $gatewayMock = $this->createMock(GatewayInterface::class);
+        $gatewayMock->expects($this->once())
+            ->method('execute')
+            ->with(new GetHttpRequest())
+            ->will($this->returnCallback(function (GetHttpRequest $request) {
+                $request->request = ['Ds_Signature' => 'a', 'Ds_MerchantParameters' => null];
+            }))
+        ;
+
+        $notifyAction = new NotifyAction();
+        $notifyAction->setApi($api);
+        $notifyAction->setGateway($gatewayMock);
+
+        $request = new Notify($model);
+
+        $notifyAction->execute($request);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \Payum\Core\Reply\HttpResponse
+     */
+    public function willThrowIfSignatureIsNotValid()
+    {
+        $api = $this->createMock(Api::class);
+
+        $model = array();
+
+        $gatewayMock = $this->createMock(GatewayInterface::class);
+        $gatewayMock->expects($this->once())
+            ->method('execute')
+            ->with(new GetHttpRequest())
+            ->will($this->returnCallback(function (GetHttpRequest $request) {
+                $request->request = ['Ds_Signature' => 'a', 'Ds_MerchantParameters' => 'a'];
+            }))
+        ;
+
+        $api->expects($this->once())
+            ->method('validateNotificationSignature')
+            ->with(['Ds_Signature' => 'a', 'Ds_MerchantParameters' => 'a'])
+            ->willReturn(false);
+
+        $notifyAction = new NotifyAction();
+        $notifyAction->setApi($api);
+        $notifyAction->setGateway($gatewayMock);
+
+        $request = new Notify($model);
+
+        $notifyAction->execute($request);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedExceptionMessage
+     * @expectedException \Payum\Core\Reply\HttpResponse
+     */
+    public function willReturn200IfValid()
+    {
+        $api = $this->createMock(Api::class);
+
+        $model = array();
+
+        $gatewayMock = $this->createMock(GatewayInterface::class);
+        $gatewayMock->expects($this->once())
+            ->method('execute')
+            ->with(new GetHttpRequest())
+            ->will($this->returnCallback(function (GetHttpRequest $request) {
+                $request->request = ['Ds_Signature' => 'a', 'Ds_MerchantParameters' => base64_encode(json_encode(['a' => 'b']))];
+            }))
+        ;
+
+        $api->expects($this->once())
+            ->method('validateNotificationSignature')
+            ->with(['Ds_Signature' => 'a', 'Ds_MerchantParameters' => base64_encode(
+                json_encode(
+                    ['a' => 'b']
+                ))
+            ])
+            ->willReturn(true);
+
+        $notifyAction = new NotifyAction();
+        $notifyAction->setApi($api);
+        $notifyAction->setGateway($gatewayMock);
+
+        $request = new Notify($model);
+
+        $notifyAction->execute($request);
+    }
 }

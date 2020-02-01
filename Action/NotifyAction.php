@@ -38,11 +38,11 @@ class NotifyAction implements ApiAwareInterface, ActionInterface, GatewayAwareIn
 
         $this->gateway->execute($httpRequest = new GetHttpRequest());
 
-        if (null === $httpRequest->request['Ds_Signature']) {
+        if (!array_key_exists('Ds_Signature', $httpRequest->request) || (null === $httpRequest->request['Ds_Signature'])) {
             throw new HttpResponse('The notification is invalid', 400);
         }
 
-        if (null === $httpRequest->request['Ds_MerchantParameters']) {
+        if (!array_key_exists('Ds_MerchantParameters', $httpRequest->request) || (null === $httpRequest->request['Ds_MerchantParameters'])) {
             throw new HttpResponse('The notification is invalid', 400);
         }
 
@@ -55,6 +55,7 @@ class NotifyAction implements ApiAwareInterface, ActionInterface, GatewayAwareIn
         //  our gateway needs to decode.
         // Once this is decoded we need to add this info to the details among
         // with the $httpRequest->request part
+
         $details->replace(
             ArrayObject::ensureArrayObject(
                 json_decode(base64_decode(strtr($httpRequest->request['Ds_MerchantParameters'], '-_', '+/')))
