@@ -55,4 +55,40 @@ class NotificationActionTest extends TestCase
 
         $notifyAction->execute(new GetHttpRequest());
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \Payum\Core\Reply\HttpResponse
+     */
+    public function willThrowIfNoDsSignature()
+    {
+        $api = new Api([
+            'merchant_code' => 'a',
+            'terminal' => '1',
+            'secret_key' => 'a_secret'
+        ]);
+
+        $model = array(
+            'Ds_Signature' => null,
+        );
+
+        $gatewayMock = $this->createMock(GatewayInterface::class);
+        $gatewayMock->expects($this->once())
+            ->method('execute')
+            ->with(new GetHttpRequest())
+            ->will($this->returnCallback(function (GetHttpRequest $request) {
+                $request->request = ['Ds_Signature' => null];
+            }))
+        ;
+
+        $notifyAction = new NotifyAction();
+        $notifyAction->setApi($api);
+        $notifyAction->setGateway($gatewayMock);
+
+        $request = new Notify($model);
+
+        $notifyAction->execute($request);
+    }
+
 }
