@@ -24,7 +24,8 @@
         }
     ],
     "require": {
-        "payum/core": "^1.5"
+        "payum/core": "^1.5",
+        "php-http/guzzle6-adapter": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",

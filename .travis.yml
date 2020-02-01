@@ -5,10 +5,6 @@ sudo: false
 git:
   depth: 10
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-
 matrix:
   include:
     - php: 7.0
