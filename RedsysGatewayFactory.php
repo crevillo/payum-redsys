@@ -3,46 +3,19 @@ namespace Crevillo\Payum\Redsys;
 
 use Crevillo\Payum\Redsys\Action\NotifyAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
+use Payum\Core\GatewayFactory;
 use Payum\Core\GatewayFactory as CoreGatewayFactory;
 use Crevillo\Payum\Redsys\Action\CaptureAction;
 use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
 use Crevillo\Payum\Redsys\Action\StatusAction;
 use Payum\Core\GatewayFactoryInterface;
 
-class RedsysGatewayFactory implements GatewayFactoryInterface
+class RedsysGatewayFactory extends GatewayFactory
 {
     /**
-     * @var GatewayFactoryInterface
-     */
-    protected $coreGatewayFactory;
-
-    /**
-     * @var array
-     */
-    private $defaultConfig;
-
-    /**
-     * @param array $defaultConfig
-     * @param GatewayFactoryInterface $coreGatewayFactory
-     */
-    public function __construct(array $defaultConfig = array(), GatewayFactoryInterface $coreGatewayFactory = null)
-    {
-        $this->coreGatewayFactory = $coreGatewayFactory ?: new CoreGatewayFactory();
-        $this->defaultConfig = $defaultConfig;
-    }
-
-    /**
      * {@inheritDoc}
      */
-    public function create(array $config = array())
-    {
-        return $this->coreGatewayFactory->create($this->createConfig($config));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createConfig(array $config = array())
+    protected function populateConfig(ArrayObject $config)
     {
         $config = ArrayObject::ensureArrayObject($config);
         $config->defaults($this->defaultConfig);
