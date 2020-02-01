@@ -7,7 +7,6 @@ use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\GatewayInterface;
-use Payum\Core\Reply\HttpPostRedirect;
 use Payum\Core\Request\Capture;
 use Payum\Core\Tests\GenericActionTest;
 

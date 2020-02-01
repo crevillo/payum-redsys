@@ -5,6 +5,7 @@ namespace Crevillo\Payum\Redsys\Tests\Action;
 use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
 use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Model\Payment;
+use Payum\Core\Model\PaymentInterface;
 use Payum\Core\Request\Convert;
 use Payum\Core\Security\TokenInterface;
 use Payum\Core\Tests\GenericActionTest;
@@ -19,8 +20,8 @@ class ConvertPaymentActionTest extends GenericActionTest
     {
         return array(
             array(new $this->requestClass(new Payment(), 'array')),
-            array(new $this->requestClass($this->getMock('Payum\Core\Model\PaymentInterface'), 'array')),
-            array(new $this->requestClass(new Payment(), 'array', $this->getMock('Payum\Core\Security\TokenInterface'))),
+            array(new $this->requestClass($this->createMock(PaymentInterface::class), 'array')),
+            array(new $this->requestClass(new Payment(), 'array', $this->createMock(TokenInterface::class))),
         );
     }
 
