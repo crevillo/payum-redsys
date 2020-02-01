@@ -3,8 +3,10 @@
 namespace Crevillo\Payum\Redsys\Tests\Action;
 
 use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
+use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Model\Payment;
 use Payum\Core\Request\Convert;
+use Payum\Core\Security\TokenInterface;
 use Payum\Core\Tests\GenericActionTest;
 
 class ConvertPaymentActionTest extends GenericActionTest
@@ -99,7 +101,7 @@ class ConvertPaymentActionTest extends GenericActionTest
             ->willReturn('001')
         ;
 
-        $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
+        $tokenMock = $this->createMock(TokenInterface::class);
 
         $action = new ConvertPaymentAction();
         $action->setApi($apiMock);
@@ -173,7 +175,7 @@ class ConvertPaymentActionTest extends GenericActionTest
             ->willReturn('001')
         ;
 
-        $tokenMock = $this->getMock('Payum\Core\Security\TokenInterface');
+        $tokenMock = $this->createMock(TokenInterface::class);
 
         $action = new ConvertPaymentAction();
         $action->setApi($apiMock);
@@ -209,6 +211,6 @@ class ConvertPaymentActionTest extends GenericActionTest
      */
     protected function createApiMock()
     {
-        return $this->getMock( 'Crevillo\Payum\Redsys\Api', array(), array(), '', false );
+        return $this->createMock(Api::class);
     }
 }
