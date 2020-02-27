@@ -56,11 +56,11 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
 
         if (false == $postData['Ds_Merchant_UrlOK'] && $request->getToken()) {
             $postData['Ds_Merchant_UrlOK'] = $request->getToken()
-                ->getTargetUrl();
+                ->getAfterUrl();
         }
         if (false == $postData['Ds_Merchant_UrlKO'] && $request->getToken()) {
             $postData['Ds_Merchant_UrlKO'] = $request->getToken()
-                ->getTargetUrl();
+                ->getAfterUrl();
         }
 
         $details['Ds_SignatureVersion'] = Api::SIGNATURE_VERSION;
