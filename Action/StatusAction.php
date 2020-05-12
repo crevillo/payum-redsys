@@ -26,7 +26,7 @@ class StatusAction implements ActionInterface
         }
 
         if (in_array($model['Ds_Response'],
-            array(Api::DS_RESPONSE_CANCELED, Api::DS_RESPONSE_USER_CANCELED))) {
+            array(Api::DS_RESPONSE_CANCELED, Api::DS_RESPONSE_USER_CANCELED, Api::DS_AUTHENTICATION_ERROR))) {
             $request->markCanceled();
 
             return;
