@@ -51,8 +51,8 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
             'Ds_Merchant_MerchantURL',
         ));
 
-        $postData['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
-        $postData['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
+        $details['Ds_Merchant_MerchantCode'] = $this->api->getMerchantCode();
+        $details['Ds_Merchant_Terminal'] = $this->api->getMerchantTerminalCode();
 
         if (false == $postData['Ds_Merchant_UrlOK'] && $request->getToken()) {
             $postData['Ds_Merchant_UrlOK'] = $request->getToken()
@@ -63,16 +63,16 @@ class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenF
                 ->getTargetUrl();
         }
 
-        $postData['Ds_SignatureVersion'] = Api::SIGNATURE_VERSION;
+        $details['Ds_SignatureVersion'] = Api::SIGNATURE_VERSION;
 
         if (false == $postData['Ds_MerchantParameters'] && $request->getToken()) {
-            $postData['Ds_MerchantParameters'] = $this->api->createMerchantParameters($postData->toUnsafeArray());
+            $details['Ds_MerchantParameters'] = $this->api->createMerchantParameters($postData->toUnsafeArray());
         }
 
         if (false == $postData['Ds_Signature']) {
-            $postData['Ds_Signature'] = $this->api->sign($postData->toUnsafeArray());
+            $details['Ds_Signature'] = $this->api->sign($postData->toUnsafeArray());
 
-            throw new HttpPostRedirect($this->api->getRedsysUrl(), $postData->toUnsafeArray());
+            throw new HttpPostRedirect($this->api->getRedsysUrl(), $details);
         }
     }
 

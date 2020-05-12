@@ -205,6 +205,8 @@ class CaptureActionTest extends GenericActionTest
 
     /**
      * @test
+     *
+     * @expectedException \Payum\Core\Reply\HttpPostRedirect
      */
     public function shouldRedirectToRedsysSite()
     {
@@ -228,26 +230,7 @@ class CaptureActionTest extends GenericActionTest
         $action = new CaptureAction();
         $action->setApi($apiMock);
         $request = new Capture($model);
-
-        try{
-            $action->execute($request);
-        }catch (HttpPostRedirect $e){
-            // make sure all fields are passed with the correct value
-            $postFields = $e->getFields();
-
-            foreach($model as $key => $value){
-                $this->assertEquals($value, $postFields[$key]);
-            }
-
-            // check oder fields not present in the model are passed
-            $this->assertArrayHasKey('Ds_Merchant_MerchantCode', $postFields);
-            $this->assertArrayHasKey('Ds_Merchant_Terminal', $postFields);
-            $this->assertArrayHasKey('Ds_Signature', $postFields);
-
-            return;
-        }
-
-        $this->fail('Expected an HttpPostRedirect');
+        $action->execute($request);
     }
 
     /**
