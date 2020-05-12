@@ -1,23 +1,41 @@
 language: php
 
-php:
-  - 5.5
-  - 5.6
-  - hhvm
-
-env:
-  - SYMFONY_VERSION=2.7.*
-
 sudo: false
 
-matrix:
-  allow_failures:
-    - php: hhvm
+git:
+  depth: 10
 
-before_script:
-  - curl -sS https://getcomposer.org/installer | php
-  - php composer.phar require symfony/symfony:${SYMFONY_VERSION} --no-update
-  - php composer.phar update --prefer-stable --prefer-lowest
+matrix:
+  include:
+    - php: 7.0
+      env: SYMFONY_VERSION=v3
+    - php: 7.1
+      env: SYMFONY_VERSION=v3
+    - php: 7.2
+      env: SYMFONY_VERSION=v3
+    - php: 7.3
+      env: SYMFONY_VERSION=v3
+    - php: 7.4
+      env: SYMFONY_VERSION=v3
+    - php: 7.1
+      env: SYMFONY_VERSION=v4
+    - php: 7.2
+      env: SYMFONY_VERSION=v4
+    - php: 7.3
+      env: SYMFONY_VERSION=v4
+    - php: 7.4
+      env: SYMFONY_VERSION=v4
+
+before_install:
+  - composer self-update
+
+install:
+  - composer require dunglas/symfony-lock:${SYMFONY_VERSION} --no-update
+  - composer require "php-http/guzzle6-adapter:^1.0" --no-update
+  - composer install --prefer-source
+
+script:
+  - bin/phpunit
 
 notifications:
   email:

@@ -24,11 +24,12 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
-        "payum/core": "1.0.*@dev"
+        "payum/core": "^1.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0"
+        "payum/core": "^1.5",
+        "phpunit/phpunit": "^5.7",
+        "symfony/phpunit-bridge": "^3.1|^4"
     },
     "config": {
         "bin-dir": "bin"
@@ -39,8 +40,7 @@
     "target-dir": "Crevillo/Payum/Redsys",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.5-dev"
         }
     }
 }
-

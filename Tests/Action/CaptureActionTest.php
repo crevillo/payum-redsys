@@ -3,9 +3,10 @@
 namespace Crevillo\Payum\Redsys\Tests\Action;
 
 use Crevillo\Payum\Redsys\Action\CaptureAction;
+use Crevillo\Payum\Redsys\Api;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\LogicException;
-use Payum\Core\Reply\HttpPostRedirect;
+use Payum\Core\GatewayInterface;
 use Payum\Core\Request\Capture;
 use Payum\Core\Tests\GenericActionTest;
 
@@ -254,7 +255,7 @@ class CaptureActionTest extends GenericActionTest
      */
     protected function createApiMock()
     {
-        return $this->getMock( 'Crevillo\Payum\Redsys\Api', array(), array(), '', false );
+        return $this->createMock(Api::class);
     }
 
     /**
@@ -262,6 +263,6 @@ class CaptureActionTest extends GenericActionTest
      */
     protected function createGatewayMock()
     {
-        return $this->getMock('Payum\Core\GatewayInterface');
+        return $this->createMock(GatewayInterface::class);
     }
 }

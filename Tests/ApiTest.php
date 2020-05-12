@@ -3,8 +3,9 @@
 namespace Crevillo\Payum\Redsys\Tests;
 
 use Crevillo\Payum\Redsys\Api;
+use PHPUnit\Framework\TestCase;
 
-class ApiTest extends \PHPUnit_Framework_TestCase
+class ApiTest extends TestCase
 {
     /**
      * @test

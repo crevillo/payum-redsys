@@ -2,8 +2,10 @@
 namespace Crevillo\Payum\Redsys\Tests;
 
 use Crevillo\Payum\Redsys\RedsysGatewayFactory;
+use Payum\Core\GatewayFactoryInterface;
+use PHPUnit\Framework\TestCase;
 
-class RedsysGatewayFactoryTest extends \PHPUnit_Framework_TestCase
+class RedsysGatewayFactoryTest extends TestCase
 {
     /**
      * @test
@@ -27,7 +29,7 @@ class RedsysGatewayFactoryTest extends \PHPUnit_Framework_TestCase
     public function shouldCreateCoreGatewayFactoryIfNotPassed()
     {
         $factory = new RedsysGatewayFactory();
-        $this->assertAttributeInstanceOf('Payum\Core\GatewayFactory', 'coreGatewayFactory', $factory);
+        $this->assertAttributeInstanceOf(GatewayFactoryInterface::class, 'coreGatewayFactory', $factory);
     }
 
     /**
@@ -35,7 +37,7 @@ class RedsysGatewayFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldUseCoreGatewayFactoryPassedAsSecondArgument()
     {
-        $coreGatewayFactory = $this->getMock('Payum\Core\GatewayFactoryInterface');
+        $coreGatewayFactory = $this->createMock(GatewayFactoryInterface::class);
         $factory = new RedsysGatewayFactory(array(), $coreGatewayFactory);
         $this->assertAttributeSame($coreGatewayFactory, 'coreGatewayFactory', $factory);
     }

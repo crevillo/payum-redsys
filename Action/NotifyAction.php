@@ -2,32 +2,27 @@
 namespace Crevillo\Payum\Redsys\Action;
 
 use Crevillo\Payum\Redsys\Api;
+use Payum\Core\Action\ActionInterface;
 use Payum\Core\Action\GatewayAwareAction;
 use Payum\Core\ApiAwareInterface;
+use Payum\Core\ApiAwareTrait;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
+use Payum\Core\GatewayAwareInterface;
+use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Request\Notify;
 
-class NotifyAction extends GatewayAwareAction implements ApiAwareInterface
+class NotifyAction implements ApiAwareInterface, ActionInterface, GatewayAwareInterface
 {
-    /**
-     * @var Api
-     */
-    protected $api;
+    use GatewayAwareTrait;
+    use ApiAwareTrait;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setApi($api)
+    public function __construct()
     {
-        if (false === $api instanceof Api) {
-            throw new UnsupportedApiException('Not supported.');
-        }
-
-        $this->api = $api;
+        $this->apiClass = Api::class;
     }
 
     /**
@@ -43,11 +38,11 @@ class NotifyAction extends GatewayAwareAction implements ApiAwareInterface
 
         $this->gateway->execute($httpRequest = new GetHttpRequest());
 
-        if (null === $httpRequest->request['Ds_Signature']) {
+        if (!array_key_exists('Ds_Signature', $httpRequest->request) || (null === $httpRequest->request['Ds_Signature'])) {
             throw new HttpResponse('The notification is invalid', 400);
         }
 
-        if (null === $httpRequest->request['Ds_MerchantParameters']) {
+        if (!array_key_exists('Ds_MerchantParameters', $httpRequest->request) || (null === $httpRequest->request['Ds_MerchantParameters'])) {
             throw new HttpResponse('The notification is invalid', 400);
         }
 
@@ -60,6 +55,7 @@ class NotifyAction extends GatewayAwareAction implements ApiAwareInterface
         //  our gateway needs to decode.
         // Once this is decoded we need to add this info to the details among
         // with the $httpRequest->request part
+
         $details->replace(
             ArrayObject::ensureArrayObject(
                 json_decode(base64_decode(strtr($httpRequest->request['Ds_MerchantParameters'], '-_', '+/')))

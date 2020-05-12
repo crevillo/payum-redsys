@@ -25,13 +25,6 @@ class StatusAction implements ActionInterface
             return;
         }
 
-
-        if ($model['Ds_AuthorisationCode'] && null === $model['Ds_Response']) {
-            $request->markPending();
-
-            return;
-        }
-
         if (in_array($model['Ds_Response'],
             array(Api::DS_RESPONSE_CANCELED, Api::DS_RESPONSE_USER_CANCELED))) {
             $request->markCanceled();
